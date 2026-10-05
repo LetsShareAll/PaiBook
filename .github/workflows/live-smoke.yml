@@ -1,0 +1,23 @@
+name: live-smoke
+
+# 对线上地址跑一遍冒烟检查。存在的理由有二：
+#   1. 部署后验收（手动触发）；
+#   2. 每天自动巡检一次，站点悄悄挂掉时会有记录，而不是等人发现。
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: 要检查的站点根地址
+        required: false
+        default: https://paibook.lssa.fun
+  schedule:
+    - cron: '20 1 * * *' # UTC 01:20 = 北京时间 09:20
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: 冒烟检查线上地址
+        run: bash scripts/smoke.sh "${{ github.event.inputs.base || 'https://paibook.lssa.fun' }}"

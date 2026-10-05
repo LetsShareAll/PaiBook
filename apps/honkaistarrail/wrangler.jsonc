@@ -11,11 +11,14 @@
       "bucket_name": "paibook-media"
     }
   ],
+  "routes": [
+    { "pattern": "paibook.lssa.fun/honkaistarrail/*", "zone_name": "lssa.fun" }
+  ],
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "paibook",
-      "database_id": "00000000-0000-0000-0000-000000000000"
+      "database_id": "a8373d8a-10ad-4abb-b2ba-996e988aebf8"
     }
   ]
 }
