@@ -11,7 +11,7 @@ function base64url(bytes: ArrayBuffer | Uint8Array): string {
   return btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '')
 }
 
-function fromBase64url(value: string): Uint8Array {
+function fromBase64url(value: string): Uint8Array<ArrayBuffer> {
   const padded = value.replaceAll('-', '+').replaceAll('_', '/').padEnd(Math.ceil(value.length / 4) * 4, '=')
   const binary = atob(padded)
   const bytes = new Uint8Array(binary.length)

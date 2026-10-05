@@ -10,6 +10,10 @@
   ],
   "dependencies": {
     "@paibook/contracts": "workspace:*",
+    "@paibook/db": "workspace:*",
     "marked": "^18.0.14"
+  },
+  "devDependencies": {
+    "vue": "^3.5.43"
   }
 }

@@ -18,8 +18,11 @@
     "vue-router": "^5.3.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261005.1",
+    "@types/node": "^26.6.4",
     "miniflare": "5.20261001.0-alpha",
     "typescript": "^5.9.3",
+    "vue-tsc": "^3.3.12",
     "wrangler": "^4.147.0"
   }
 }

@@ -48,6 +48,9 @@ jobs:
             echo "port $port -> $code"
           done
 
+      - name: 类型检查（四个应用）
+        run: pnpm -r --filter "./apps/*" typecheck
+
       - name: 对比度体检（四套主题按 WCAG 公式核对）
         run: node scripts/check-contrast.mjs
 
