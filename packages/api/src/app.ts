@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import type { GameId } from '@paibook/contracts'
 import type { Db } from '@paibook/db'
-import { getPublishedGuide, listLinks, listPublishedGuides, searchPublishedGuides } from '@paibook/db'
+import { getPublishedGuide, listEntities, listLinks, listPublishedGuides, searchPublishedGuides } from '@paibook/db'
 import { createAdminApp } from './admin.ts'
 
 export interface ApiEnv {
@@ -37,6 +37,12 @@ export function createApiApp(ctx: ApiContext) {
   app.get('/links', async (c) => {
     const items = await listLinks(ctx.db, ctx.game)
     return c.json({ items, total: items.length })
+  })
+
+  /** 档案选择器用：本游戏的实体清单（公开，无用户数据）。 */
+  app.get('/entities', async (c) => {
+    const items = await listEntities(ctx.db, ctx.game)
+    return c.json({ items })
   })
 
   app.get('/search', async (c) => {

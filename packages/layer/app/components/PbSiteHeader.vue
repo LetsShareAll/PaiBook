@@ -19,6 +19,9 @@ defineProps<{
         <span class="pb-header__title">{{ title }}</span>
       </NuxtLink>
       <p class="pb-header__tagline">{{ tagline }}</p>
+      <div class="pb-header__nav">
+        <NuxtLink class="pb-header__navlink" to="/profile">我的档案</NuxtLink>
+      </div>
       <form class="pb-header__search" :action="apiUrl('/search')" method="get">
         <input
           class="pb-header__input"
@@ -70,8 +73,19 @@ defineProps<{
   font-size: 13px;
   letter-spacing: 0.06em;
 }
-.pb-header__search {
+.pb-header__nav {
   margin-top: var(--pb-space-3);
+}
+.pb-header__navlink {
+  color: var(--pb-muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+.pb-header__navlink:hover {
+  color: var(--pb-accent-ink);
+}
+.pb-header__search {
+  margin-top: var(--pb-space-2);
 }
 .pb-header__input {
   width: 100%;

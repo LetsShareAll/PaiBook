@@ -1,21 +1,49 @@
 <script setup lang="ts">
+import { computed, onMounted } from 'vue'
 import type { GuideLink, GuideSummary } from '@paibook/contracts'
 
-defineProps<{
+const props = defineProps<{
   guides: GuideSummary[]
   total: number
   links: GuideLink[]
 }>()
+
+const { entityIds, enabled, ready, load, persist } = useProfile()
+
+onMounted(load)
+
+const visibleGuides = computed(() =>
+  enabled.value && entityIds.value.length > 0
+    ? props.guides.filter((guide) => matchesProfile(guide.entities.map((entity) => entity.id), entityIds.value))
+    : props.guides,
+)
+
+const hidden = computed(() => props.guides.length - visibleGuides.value.length)
 </script>
 
 <template>
   <main class="pb-shell">
     <h1 class="pb-title">全部攻略</h1>
-    <p class="pb-muted count">共 {{ total }} 篇</p>
+    <p class="pb-muted count">
+      共 {{ total }} 篇<template v-if="ready && entityIds.length">（已按我的档案过滤）</template>
+    </p>
+
+    <p v-if="ready && entityIds.length" class="filter">
+      <label class="filter__label">
+        <input v-model="enabled" type="checkbox" @change="persist()" />
+        只看与我相关的条目
+      </label>
+      <span v-if="enabled && hidden > 0" class="pb-muted filter__hint">已隐藏 {{ hidden }} 篇</span>
+      <NuxtLink class="filter__link" to="/profile">编辑档案</NuxtLink>
+    </p>
 
     <div class="list">
-      <PbGuideCard v-for="guide in guides" :key="guide.id" :guide="guide" />
+      <PbGuideCard v-for="guide in visibleGuides" :key="guide.id" :guide="guide" />
     </div>
+
+    <p v-if="ready && enabled && entityIds.length && visibleGuides.length === 0" class="pb-muted empty">
+      你选中的实体还没有对应攻略——把过滤关掉就能看到全部 {{ total }} 篇。
+    </p>
 
     <section v-if="links.length" class="links">
       <h2 class="section">站外推荐</h2>
@@ -45,12 +73,34 @@ defineProps<{
 
 <style scoped>
 .count {
+  margin: 0 0 var(--pb-space-3);
+  font-size: 13px;
+}
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--pb-space-3);
   margin: 0 0 var(--pb-space-4);
   font-size: 13px;
+}
+.filter__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pb-space-1);
+  cursor: pointer;
+}
+.filter__link {
+  color: var(--pb-accent-ink);
+  text-underline-offset: 3px;
 }
 .list {
   display: grid;
   gap: var(--pb-space-3);
+}
+.empty {
+  margin: var(--pb-space-3) 0 0;
+  font-size: 13px;
 }
 .links {
   margin-top: var(--pb-space-5);

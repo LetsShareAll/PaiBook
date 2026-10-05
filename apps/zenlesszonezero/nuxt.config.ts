@@ -1,4 +1,7 @@
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: { siteGame: 'zenlesszonezero' },
+  },
   extends: ['@paibook/layer'],
   compatibilityDate: '2026-10-05',
   nitro: {

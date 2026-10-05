@@ -1,5 +1,5 @@
 import { and, asc, desc, eq } from 'drizzle-orm'
-import type { AdminGuideDetail, AdminGuideItem, GameId, Taxonomy } from '@paibook/contracts'
+import type { AdminGuideDetail, AdminGuideItem, EntityKind, GameId, Taxonomy } from '@paibook/contracts'
 import type { Db } from '../client.ts'
 import { entity, guide, guideEntity, version } from '../schema.ts'
 
@@ -121,15 +121,19 @@ export async function listTaxonomy(db: Db, gameId: GameId): Promise<Taxonomy> {
       .from(version)
       .where(eq(version.gameId, gameId))
       .orderBy(desc(version.sortKey), asc(version.label)),
-    db
-      .select({ id: entity.id, kind: entity.kind, nameZh: entity.nameZh })
-      .from(entity)
-      .where(eq(entity.gameId, gameId))
-      .orderBy(asc(entity.nameZh)),
+    listEntities(db, gameId),
   ])
 
-  return {
-    versions,
-    entities: entities.map((row) => ({ id: row.id, kind: row.kind as Taxonomy['entities'][number]['kind'], nameZh: row.nameZh })),
-  }
+  return { versions, entities }
+}
+
+/** 公开的实体清单（不含任何用户数据）。 */
+export async function listEntities(db: Db, gameId: GameId): Promise<{ id: string; kind: EntityKind; nameZh: string }[]> {
+  const rows = await db
+    .select({ id: entity.id, kind: entity.kind, nameZh: entity.nameZh })
+    .from(entity)
+    .where(eq(entity.gameId, gameId))
+    .orderBy(asc(entity.nameZh))
+
+  return rows.map((row) => ({ id: row.id, kind: row.kind as EntityKind, nameZh: row.nameZh }))
 }

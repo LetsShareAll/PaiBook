@@ -10,5 +10,6 @@ export {
   updateGuide,
   setGuideStatus,
   listTaxonomy,
+  listEntities,
   type GuideWriteInput,
 } from './repositories/admin.ts'
