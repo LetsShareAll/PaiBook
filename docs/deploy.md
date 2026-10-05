@@ -43,8 +43,15 @@ CI：`.github/workflows/deploy.yml` 在 push 到 `main` 时对四个应用矩阵
 
 ## 4. 部署后自检
 
-- [ ] `https://paibook.lssa.fun/` 门厅可访问，三个游戏卡片链接正确。
-- [ ] `/genshin/`、`/honkaistarrail/`、`/zenlesszonezero/` 各自的主题与内容正确。
-- [ ] 各站 `/admin` 能用 `ADMIN_PASSWORD` 登录；发布一篇后前台**立刻**可见（验证 purge）。
+先跑冒烟脚本（一条命令覆盖四站的存活、接口、上锁、robots/sitemap 与搜索）：
+
+```bash
+bash scripts/smoke.sh https://paibook.lssa.fun
+```
+
+脚本查不到的、仍需人看一遍的：
+
+- [ ] `/genshin/`、`/honkaistarrail/`、`/zenlesszonezero/` 三站主题确实各不相同（原神羊皮纸 / 星铁星海 / 绝区零霓虹）。
+- [ ] 各站 `/admin` 能用 `ADMIN_PASSWORD` 登录；**发布一篇后前台立刻可见**（这条是边缘缓存 purge 的真正验收点）。
 - [ ] 搜索：分站搜索只出本游戏结果；门厅搜索跨游戏。
 - [ ] 页脚非官方声明在位；星铁站包含官方指引要求的署名句。
