@@ -1,9 +1,13 @@
 import { Hono } from 'hono'
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
 import { createMiddleware } from 'hono/factory'
-import { guideWriteSchema, linkWriteSchema, loginSchema } from '@paibook/contracts'
+import { entityWriteSchema, guideWriteSchema, linkWriteSchema, loginSchema, versionWriteSchema } from '@paibook/contracts'
 import {
+  createEntity,
   createGuide,
+  createVersion,
+  deleteEntity,
+  deleteVersion,
   createLink,
   deleteLink,
   getGuideForAdmin,
@@ -92,6 +96,48 @@ export function createAdminApp(ctx: ApiContext) {
   app.post('/reindex', async (c) => c.json({ count: await reindexGuideSearch(ctx.db, ctx.game) }))
 
   app.get('/links', async (c) => c.json({ items: await listLinks(ctx.db, ctx.game) }))
+
+  app.post('/entities', async (c) => {
+    const parsed = entityWriteSchema.safeParse(await c.req.json().catch(() => null))
+    if (!parsed.success) return c.json({ error: 'invalid_payload', issues: parsed.error.issues }, 400)
+
+    try {
+      const id = await createEntity(ctx.db, ctx.game, parsed.data)
+      await ctx.onContentChanged?.({ slug: '', status: 'published' })
+      return c.json({ id }, 201)
+    } catch {
+      return c.json({ error: 'duplicate', message: '同一游戏下已有同名同类型的实体' }, 409)
+    }
+  })
+
+  app.delete('/entities/:id', async (c) => {
+    const result = await deleteEntity(ctx.db, ctx.game, c.req.param('id'))
+    if (!result) return c.json({ error: 'not_found' }, 404)
+
+    await ctx.onContentChanged?.({ slug: '', status: 'published' })
+    return c.json(result)
+  })
+
+  app.post('/versions', async (c) => {
+    const parsed = versionWriteSchema.safeParse(await c.req.json().catch(() => null))
+    if (!parsed.success) return c.json({ error: 'invalid_payload', issues: parsed.error.issues }, 400)
+
+    try {
+      const id = await createVersion(ctx.db, ctx.game, parsed.data.label, parsed.data.sortKey)
+      await ctx.onContentChanged?.({ slug: '', status: 'published' })
+      return c.json({ id }, 201)
+    } catch {
+      return c.json({ error: 'duplicate', message: '这个版本号已经存在' }, 409)
+    }
+  })
+
+  app.delete('/versions/:id', async (c) => {
+    const result = await deleteVersion(ctx.db, ctx.game, c.req.param('id'))
+    if (!result) return c.json({ error: 'not_found' }, 404)
+
+    await ctx.onContentChanged?.({ slug: '', status: 'published' })
+    return c.json(result)
+  })
 
   app.post('/links', async (c) => {
     const parsed = linkWriteSchema.safeParse(await c.req.json().catch(() => null))

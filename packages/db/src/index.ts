@@ -4,6 +4,14 @@ export { listPublishedGuides, getPublishedGuide, listRecentGuides } from './repo
 export { searchPublishedGuides, syncGuideSearch, reindexGuideSearch } from './repositories/search.ts'
 export { listLinks, createLink, deleteLink, type LinkWriteInput } from './repositories/links.ts'
 export {
+  listVersions,
+  createEntity,
+  deleteEntity,
+  createVersion,
+  deleteVersion,
+  type EntityWriteInput,
+} from './repositories/taxonomy.ts'
+export {
   listGuidesForAdmin,
   getGuideForAdmin,
   createGuide,

@@ -56,3 +56,16 @@ export const adminGuideListSchema = z.object({
 export type AdminGuideList = z.infer<typeof adminGuideListSchema>
 
 export { guideSummarySchema }
+
+export const entityWriteSchema = z.object({
+  kind: entityKindSchema,
+  nameZh: z.string().min(1).max(40),
+  nameEn: z.string().max(60).nullable(),
+})
+export type EntityWrite = z.infer<typeof entityWriteSchema>
+
+export const versionWriteSchema = z.object({
+  label: z.string().min(1).max(20),
+  sortKey: z.number().int().min(0).max(9999).default(0),
+})
+export type VersionWrite = z.infer<typeof versionWriteSchema>

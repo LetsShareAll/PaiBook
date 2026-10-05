@@ -195,6 +195,8 @@ onMounted(boot)
           </li>
         </ul>
 
+        <PbAdminTaxonomy @changed="refresh" />
+
         <section class="admin-links">
           <h2 class="admin-links__title">站外推荐（Link）</h2>
           <p class="admin-links__hint pb-muted">只存标题与自写摘要，正文留在原站。</p>
