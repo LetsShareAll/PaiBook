@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { gameCatalog } from '@paibook/contracts'
 import type { Db } from '@paibook/db'
-import { listRecentGuides } from '@paibook/db'
+import { listRecentGuides, searchPublishedGuides } from '@paibook/db'
 
 export interface PortalContext {
   db: Db
@@ -26,6 +26,12 @@ export function createPortalApp(ctx: PortalContext) {
   app.get('/recent', async (c) => {
     const items = await listRecentGuides(ctx.db, 12)
     return c.json({ items, total: items.length })
+  })
+
+  app.get('/search', async (c) => {
+    const query = (c.req.query('q') ?? '').trim()
+    const items = query ? await searchPublishedGuides(ctx.db, null, query) : []
+    return c.json({ items, total: items.length, query })
   })
 
   return app

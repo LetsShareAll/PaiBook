@@ -1,9 +1,9 @@
 import { and, desc, eq, inArray } from 'drizzle-orm'
-import type { EntityRef, GameId, GuideDetail, GuideSummary, EntityKind } from '@paibook/contracts'
+import type { EntityRef, EntityKind, GameId, GuideDetail, GuideSummary } from '@paibook/contracts'
 import type { Db } from '../client.ts'
 import { entity, guide, guideEntity, version } from '../schema.ts'
 
-type GuideRow = {
+export type GuideRow = {
   id: string
   gameId: string
   slug: string
@@ -14,7 +14,7 @@ type GuideRow = {
   versionLabel: string | null
 }
 
-function toSummary(row: GuideRow, entities: EntityRef[]): GuideSummary {
+export function toSummary(row: GuideRow, entities: EntityRef[]): GuideSummary {
   return {
     id: row.id,
     gameId: row.gameId as GameId,
@@ -27,7 +27,7 @@ function toSummary(row: GuideRow, entities: EntityRef[]): GuideSummary {
   }
 }
 
-async function loadEntities(db: Db, guideIds: string[]): Promise<Map<string, EntityRef[]>> {
+export async function loadEntities(db: Db, guideIds: string[]): Promise<Map<string, EntityRef[]>> {
   const grouped = new Map<string, EntityRef[]>()
   if (guideIds.length === 0) return grouped
 
@@ -50,7 +50,7 @@ async function loadEntities(db: Db, guideIds: string[]): Promise<Map<string, Ent
   return grouped
 }
 
-const guideColumns = {
+export const guideColumns = {
   id: guide.id,
   gameId: guide.gameId,
   slug: guide.slug,
@@ -76,7 +76,8 @@ export async function listPublishedGuides(db: Db, gameId: GameId): Promise<Guide
   return rows.map((row) => toSummary(row, entities.get(row.id) ?? []))
 }
 
-export async function getPublishedGuide(db: Db, gameId: GameId, slug: string): Promise<GuideDetail | null> {  const [row] = await db
+export async function getPublishedGuide(db: Db, gameId: GameId, slug: string): Promise<GuideDetail | null> {
+  const [row] = await db
     .select({ ...guideColumns, body: guide.body })
     .from(guide)
     .leftJoin(version, eq(version.id, guide.versionId))

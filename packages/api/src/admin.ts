@@ -7,7 +7,9 @@ import {
   getGuideForAdmin,
   listGuidesForAdmin,
   listTaxonomy,
+  reindexGuideSearch,
   setGuideStatus,
+  syncGuideSearch,
   updateGuide,
 } from '@paibook/db'
 import type { ApiContext } from './app.ts'
@@ -60,6 +62,7 @@ export function createAdminApp(ctx: ApiContext) {
     if (!parsed.success) return c.json({ error: 'invalid_payload', issues: parsed.error.issues }, 400)
 
     const id = await createGuide(ctx.db, ctx.game, parsed.data)
+    await syncGuideSearch(ctx.db, id)
     return c.json({ id }, 201)
   })
 
@@ -78,8 +81,12 @@ export function createAdminApp(ctx: ApiContext) {
     if (!existing) return c.json({ error: 'not_found' }, 404)
 
     await updateGuide(ctx.db, id, parsed.data)
+    await syncGuideSearch(ctx.db, id)
     return c.json({ ok: true })
   })
+
+  /** 重建本站搜索索引（首次建表或改了分词规则时用）。 */
+  app.post('/reindex', async (c) => c.json({ count: await reindexGuideSearch(ctx.db, ctx.game) }))
 
   app.post('/guides/:id/status', async (c) => {
     const body = (await c.req.json().catch(() => null)) as { status?: string } | null

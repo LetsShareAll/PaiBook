@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import type { GameId } from '@paibook/contracts'
 import type { Db } from '@paibook/db'
-import { getPublishedGuide, listPublishedGuides } from '@paibook/db'
+import { getPublishedGuide, listPublishedGuides, searchPublishedGuides } from '@paibook/db'
 import { createAdminApp } from './admin.ts'
 
 export interface ApiEnv {
@@ -32,6 +32,12 @@ export function createApiApp(ctx: ApiContext) {
     const guide = await getPublishedGuide(ctx.db, ctx.game, c.req.param('slug'))
     if (!guide) return c.json({ error: 'not_found' }, 404)
     return c.json(guide)
+  })
+
+  app.get('/search', async (c) => {
+    const query = (c.req.query('q') ?? '').trim()
+    const items = query ? await searchPublishedGuides(ctx.db, ctx.game, query) : []
+    return c.json({ items, total: items.length, query })
   })
 
   app.route('/admin', createAdminApp(ctx))

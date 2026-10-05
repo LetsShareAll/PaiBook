@@ -19,6 +19,15 @@ defineProps<{
         <span class="pb-header__title">{{ title }}</span>
       </NuxtLink>
       <p class="pb-header__tagline">{{ tagline }}</p>
+      <form class="pb-header__search" action="/search" method="get">
+        <input
+          class="pb-header__input"
+          type="search"
+          name="q"
+          placeholder="搜索攻略…"
+          aria-label="搜索攻略"
+        />
+      </form>
     </div>
     <div class="pb-header__rule" aria-hidden="true">
       <span class="pb-header__diamond" />
@@ -60,6 +69,24 @@ defineProps<{
   color: var(--pb-muted);
   font-size: 13px;
   letter-spacing: 0.06em;
+}
+.pb-header__search {
+  margin-top: var(--pb-space-3);
+}
+.pb-header__input {
+  width: 100%;
+  max-width: 320px;
+  padding: 5px 10px;
+  border: 1px solid var(--pb-edge);
+  border-radius: var(--pb-radius-sm);
+  background: var(--pb-surface);
+  color: var(--pb-ink);
+  font-family: inherit;
+  font-size: 13px;
+}
+.pb-header__input:focus {
+  outline: 2px solid var(--pb-accent);
+  outline-offset: -1px;
 }
 .pb-header__rule {
   position: relative;
