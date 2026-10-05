@@ -13,7 +13,6 @@ export default defineEventHandler(async (event) => {
   }
 
   const request = toWebRequest(event)
-  const origin = new URL(request.url).origin
 
   const app = createApiApp({
     db: createDb(env.DB),
@@ -21,8 +20,8 @@ export default defineEventHandler(async (event) => {
     env: { ADMIN_PASSWORD: env.ADMIN_PASSWORD, SESSION_SECRET: env.SESSION_SECRET },
     secureCookies: new URL(request.url).protocol === 'https:',
     onContentChanged: async ({ slug }) => {
-      const deleted = await purgeContentPaths(origin, slug)
-      console.log(`[purge] ${slug}: ${deleted.length} 条缓存已清除`)
+      const cleared = await purgeContentPaths(slug)
+      console.log(`[purge] ${slug}: 已清除 ${cleared} 条缓存`)
     },
   })
 

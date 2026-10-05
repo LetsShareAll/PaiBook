@@ -7,8 +7,13 @@
     "node": ">=26"
   },
   "scripts": {
+    "dev:portal": "pnpm --filter @paibook/portal dev",
     "dev:genshin": "pnpm --filter @paibook/genshin dev",
-    "build": "pnpm -r build",
-    "typecheck": "pnpm -r typecheck"
+    "dev:honkaistarrail": "pnpm --filter @paibook/honkaistarrail dev",
+    "dev:zenlesszonezero": "pnpm --filter @paibook/zenlesszonezero dev",
+    "build": "pnpm -r --filter \"./apps/*\" build",
+    "typecheck": "pnpm -r --filter \"./apps/*\" typecheck",
+    "db:local": "bash scripts/local-db.sh",
+    "reindex:local": "node scripts/reindex-local.mjs"
   }
 }

@@ -1,20 +1,30 @@
 /**
- * 发布后清掉受影响的边缘缓存路径（ADR-0002）。
- * 缓存里存的是这些 URL 的渲染结果或 API JSON，删除即可让下次请求回源。
+ * 发布后清缓存（ADR-0002）。
+ *
+ * 实测发现：route rules 的 swr 缓存由 Nitro 自己的 storage 承载，
+ * 直接删 `caches.default` 里的 URL 是清不掉的——所以这里清 Nitro 的 cache storage。
+ * 站点规模很小、发布频率很低，整表清空的代价可以忽略；换来的是「发布即生效」这件事不依赖键名推导。
  */
-export async function purgeContentPaths(origin: string, slug: string): Promise<string[]> {
+export async function purgeContentPaths(slug: string): Promise<number> {
+  let cleared = 0
+
+  try {
+    const storage = useStorage('cache')
+    const keys = await storage.getKeys()
+    for (const key of keys) {
+      await storage.removeItem(key)
+      cleared += 1
+    }
+  } catch (error) {
+    console.warn('[purge] Nitro cache storage 不可用：', String(error))
+  }
+
   const cache = (globalThis as { caches?: { default?: Cache } }).caches?.default
-  if (!cache) return []
+  if (cache) {
+    for (const path of ['/', `/guides/${slug}`, '/api/guides', `/api/guides/${slug}`]) {
+      if (await cache.delete(new Request(`https://paibook.local${path}`))) cleared += 1
+    }
+  }
 
-  const paths = ['/', `/guides/${slug}`, '/api/guides', `/api/guides/${slug}`]
-  const deleted: string[] = []
-
-  await Promise.all(
-    paths.map(async (path) => {
-      const url = new URL(path, origin).toString()
-      if (await cache.delete(new Request(url))) deleted.push(url)
-    }),
-  )
-
-  return deleted
+  return cleared
 }
