@@ -1,0 +1,77 @@
+/* PaiBook 设计 token：三站共用同一套结构，各站只换值。
+   [data-site] 由各应用的 app.head.htmlAttrs 设置。 */
+
+:root {
+  --pb-font-sans: 'Source Han Sans SC', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  --pb-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --pb-space-1: 4px;
+  --pb-space-2: 8px;
+  --pb-space-3: 16px;
+  --pb-space-4: 24px;
+  --pb-space-5: 40px;
+
+  --pb-radius-sm: 6px;
+  --pb-radius-md: 12px;
+  --pb-line: 1px solid var(--pb-edge);
+
+  --pb-paper: #f7f2e7;
+  --pb-surface: #fffdf8;
+  --pb-ink: #3b3a36;
+  --pb-muted: #8a8578;
+  --pb-edge: #e2d9c6;
+  --pb-accent: #c8a86b;
+  --pb-accent-ink: #2b2418;
+}
+
+[data-site='genshin'] {
+  --pb-paper: #f7f2e7;
+  --pb-surface: #fffdf8;
+  --pb-ink: #3b3a36;
+  --pb-accent: #c8a86b;
+}
+
+[data-site='honkaistarrail'] {
+  --pb-paper: #0d1220;
+  --pb-surface: #151c2f;
+  --pb-ink: #e9edf8;
+  --pb-muted: #8f9ab8;
+  --pb-edge: #26314b;
+  --pb-accent: #8fb6ff;
+  --pb-accent-ink: #0d1220;
+}
+
+[data-site='zenlesszonezero'] {
+  --pb-paper: #101010;
+  --pb-surface: #171717;
+  --pb-ink: #f2f2f2;
+  --pb-muted: #9a9a9a;
+  --pb-edge: #2a2a2a;
+  --pb-accent: #eaff3d;
+  --pb-accent-ink: #101010;
+}
+
+body {
+  margin: 0;
+  background: var(--pb-paper);
+  color: var(--pb-ink);
+  font-family: var(--pb-font-sans);
+  line-height: 1.7;
+}
+
+.pb-shell {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: var(--pb-space-5) var(--pb-space-4);
+}
+
+.pb-title {
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  margin: 0 0 var(--pb-space-2);
+}
+
+.pb-muted {
+  color: var(--pb-muted);
+}
