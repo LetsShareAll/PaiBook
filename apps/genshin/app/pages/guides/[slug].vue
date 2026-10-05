@@ -16,19 +16,25 @@ useHead({
 
 <template>
   <main v-if="guide" class="pb-shell">
-    <NuxtLink class="pb-muted back" to="/">← 全部攻略</NuxtLink>
-    <h1 class="pb-title">{{ guide.title }}</h1>
+    <NuxtLink class="back" to="/">← 全部攻略</NuxtLink>
 
-    <p class="meta">
-      <span v-if="guide.version" class="pb-badge">{{ guide.version.label }}</span>
-      <span v-if="guide.publishedAt" class="pb-muted">{{ guide.publishedAt.slice(0, 10) }}</span>
-    </p>
+    <header class="head">
+      <h1 class="pb-title">{{ guide.title }}</h1>
+      <p class="meta">
+        <span v-if="guide.version" class="pb-badge">{{ guide.version.label }}</span>
+        <span v-if="guide.publishedAt" class="pb-muted date">{{ guide.publishedAt.slice(0, 10) }}</span>
+      </p>
+      <p v-if="guide.entities.length" class="pb-muted entities">
+        <template v-for="(entity, index) in guide.entities" :key="entity.id">
+          <span v-if="index > 0" class="pb-dot">◆</span>{{ entity.nameZh }}
+        </template>
+      </p>
+    </header>
 
-    <p v-if="guide.entities.length" class="pb-muted">
-      {{ guide.entities.map((entity) => entity.nameZh).join(' · ') }}
-    </p>
-
-    <article class="body">{{ guide.body }}</article>
+    <article class="pb-panel body">
+      <p class="summary">{{ guide.summary }}</p>
+      <PbProse class="prose" :markdown="guide.body" />
+    </article>
   </main>
 </template>
 
@@ -36,17 +42,39 @@ useHead({
 .back {
   display: inline-block;
   margin-bottom: var(--pb-space-3);
+  color: var(--pb-muted);
   text-decoration: none;
   font-size: 14px;
+}
+.back:hover {
+  color: var(--pb-accent-ink);
+}
+.head {
+  margin-bottom: var(--pb-space-4);
 }
 .meta {
   display: flex;
   align-items: center;
   gap: var(--pb-space-2);
-  margin: 0 0 var(--pb-space-2);
+  margin: var(--pb-space-2) 0 0;
+}
+.date {
+  font-size: 12px;
+}
+.entities {
+  margin: var(--pb-space-2) 0 0;
+  font-size: 13px;
 }
 .body {
-  white-space: pre-wrap;
+  padding: var(--pb-space-4);
+}
+.summary {
+  margin: 0;
+  padding-bottom: var(--pb-space-3);
+  border-bottom: 1px solid var(--pb-edge);
+  color: var(--pb-muted);
+}
+.prose {
   margin-top: var(--pb-space-4);
 }
 </style>

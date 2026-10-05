@@ -1,8 +1,10 @@
 /* PaiBook 设计 token：三站共用同一套结构，各站只换值。
-   [data-site] 由各应用的 app.head.htmlAttrs 设置。 */
+   [data-site] 由各应用的 app.head.htmlAttrs 设置。
+   资产红线（ADR-0007）：所有纹样自绘，不使用官方素材与游戏内字体。 */
 
 :root {
-  --pb-font-sans: 'Source Han Sans SC', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  --pb-font-sans: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+  --pb-font-display: 'Noto Serif SC', 'Songti SC', 'SimSun', var(--pb-font-sans);
   --pb-font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   --pb-space-1: 4px;
@@ -10,45 +12,66 @@
   --pb-space-3: 16px;
   --pb-space-4: 24px;
   --pb-space-5: 40px;
+  --pb-space-6: 64px;
 
   --pb-radius-sm: 6px;
-  --pb-radius-md: 12px;
+  --pb-radius-md: 10px;
+  --pb-edge: #e2d9c6;
   --pb-line: 1px solid var(--pb-edge);
 
   --pb-paper: #f7f2e7;
   --pb-surface: #fffdf8;
+  --pb-surface-alt: #fbf7ee;
   --pb-ink: #3b3a36;
   --pb-muted: #8a8578;
-  --pb-edge: #e2d9c6;
   --pb-accent: #c8a86b;
-  --pb-accent-ink: #2b2418;
+  --pb-accent-ink: #453718;
+  --pb-accent-soft: #ecdfc4;
+  --pb-shadow: 0 1px 3px rgb(0 0 0 / 6%);
+  --pb-measure: 68ch;
 }
 
 [data-site='genshin'] {
   --pb-paper: #f7f2e7;
   --pb-surface: #fffdf8;
+  --pb-surface-alt: #fbf7ee;
   --pb-ink: #3b3a36;
   --pb-accent: #c8a86b;
+  --pb-accent-ink: #453718;
+  --pb-accent-soft: #ecdfc4;
+  --pb-edge: #e2d9c6;
 }
 
 [data-site='honkaistarrail'] {
+  --pb-font-display: 'Noto Sans SC', sans-serif;
   --pb-paper: #0d1220;
   --pb-surface: #151c2f;
+  --pb-surface-alt: #111726;
   --pb-ink: #e9edf8;
   --pb-muted: #8f9ab8;
   --pb-edge: #26314b;
   --pb-accent: #8fb6ff;
   --pb-accent-ink: #0d1220;
+  --pb-accent-soft: #1d2740;
+  --pb-shadow: 0 1px 3px rgb(0 0 0 / 40%);
 }
 
 [data-site='zenlesszonezero'] {
+  --pb-font-display: 'Noto Sans SC', sans-serif;
   --pb-paper: #101010;
   --pb-surface: #171717;
+  --pb-surface-alt: #131313;
   --pb-ink: #f2f2f2;
   --pb-muted: #9a9a9a;
   --pb-edge: #2a2a2a;
   --pb-accent: #eaff3d;
   --pb-accent-ink: #101010;
+  --pb-accent-soft: #232600;
+  --pb-shadow: 0 1px 3px rgb(0 0 0 / 50%);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -57,21 +80,69 @@ body {
   color: var(--pb-ink);
   font-family: var(--pb-font-sans);
   line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.pb-app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
 .pb-shell {
-  max-width: 68ch;
+  width: 100%;
+  max-width: var(--pb-measure);
   margin: 0 auto;
-  padding: var(--pb-space-5) var(--pb-space-4);
+  padding: var(--pb-space-5) var(--pb-space-4) var(--pb-space-6);
+  flex: 1;
 }
 
 .pb-title {
-  font-size: 28px;
-  font-weight: 650;
-  letter-spacing: -0.012em;
+  font-family: var(--pb-font-display);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   margin: 0 0 var(--pb-space-2);
 }
 
 .pb-muted {
   color: var(--pb-muted);
+}
+
+.pb-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px solid var(--pb-accent);
+  border-radius: 999px;
+  color: var(--pb-accent-ink);
+  background: var(--pb-accent-soft);
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.pb-dot {
+  color: var(--pb-accent);
+  font-size: 9px;
+  margin: 0 6px;
+  vertical-align: 1px;
+}
+
+/* 面板：双层描边 + 角标，复刻游戏内面板的"构件语言"（自绘，非官方素材） */
+.pb-panel {
+  position: relative;
+  background: var(--pb-surface);
+  border: 1px solid var(--pb-edge);
+  border-radius: var(--pb-radius-md);
+  box-shadow: var(--pb-shadow);
+}
+
+.pb-panel::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid var(--pb-accent-soft);
+  border-radius: calc(var(--pb-radius-md) - 3px);
+  pointer-events: none;
 }
