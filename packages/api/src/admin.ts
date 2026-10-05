@@ -21,6 +21,7 @@ import {
   updateGuide,
 } from '@paibook/db'
 import type { ApiContext } from './app.ts'
+import { createUploadApp } from './uploads.ts'
 import {
   SESSION_COOKIE,
   SESSION_TTL_SECONDS,
@@ -60,6 +61,9 @@ export function createAdminApp(ctx: ApiContext) {
   }))
 
   app.get('/session', (c) => c.json({ ok: true }))
+
+  // 上传需要登录：它写的是对象存储，不是公开接口。
+  app.route('/uploads', createUploadApp(ctx))
 
   app.get('/taxonomy', async (c) => c.json(await listTaxonomy(ctx.db, ctx.game)))
 

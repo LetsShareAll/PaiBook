@@ -26,6 +26,8 @@ export default defineEventHandler(async (event) => {
   const app = createApiApp({
     db: createDb(env.DB),
     game: game.data,
+    basePath: prefix,
+    media: env.MEDIA,
     env: { ADMIN_PASSWORD: env.ADMIN_PASSWORD, SESSION_SECRET: env.SESSION_SECRET },
     secureCookies: url.protocol === 'https:',
     onContentChanged: async ({ slug }) => {

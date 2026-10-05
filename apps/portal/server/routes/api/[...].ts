@@ -5,6 +5,6 @@ import { useSiteEnv } from '../../utils/cloudflare'
 
 export default defineEventHandler(async (event) => {
   const env = useSiteEnv(event)
-  const app = createPortalApp({ db: createDb(env.DB) })
+  const app = createPortalApp({ db: createDb(env.DB), media: env.MEDIA })
   return app.fetch(toWebRequest(event))
 })

@@ -47,6 +47,11 @@ if [ "${authed:-0}" = "1" ]; then
   else
     miss "D1 数据库 paibook 不存在" "npx wrangler d1 create paibook"
   fi
+  if npx wrangler r2 bucket list 2>/dev/null | grep -q "paibook-media"; then
+    ok "R2 桶 paibook-media 存在"
+  else
+    miss "R2 桶 paibook-media 不存在" "npx wrangler r2 bucket create paibook-media"
+  fi
   for app in "${apps[@]}"; do
     list=$(cd "$root/apps/$app" && npx wrangler secret list 2>/dev/null || true)
     echo "$list" | grep -q "ADMIN_PASSWORD" || miss "apps/$app 缺 ADMIN_PASSWORD" "cd apps/$app && npx wrangler secret put ADMIN_PASSWORD"

@@ -25,6 +25,27 @@ const body = ref('')
 const versionId = ref<string | null>(null)
 const entityIds = ref<string[]>([])
 const preview = ref(false)
+const uploading = ref(false)
+
+async function uploadImage(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  uploading.value = true
+  try {
+    const form = new FormData()
+    form.append('file', file)
+    const result = await $fetch<{ url: string }>(apiUrl('/api/admin/uploads'), { method: 'POST', body: form })
+    const prefix = body.value && !body.value.endsWith('\n') ? '\n' : ''
+    body.value = `${body.value}${prefix}\n![${file.name}](${result.url})\n`
+  } catch {
+    window.alert('图片上传失败：只支持 PNG / JPEG / WebP / GIF，单张不超过 5 MB。')
+  } finally {
+    uploading.value = false
+    input.value = ''
+  }
+}
 
 watch(
   () => props.initial,
@@ -149,9 +170,15 @@ function toggleEntity(id: string) {
     <div class="field">
       <div class="field__bar">
         <span class="label">正文（Markdown）</span>
-        <button class="pb-btn pb-btn--ghost" type="button" @click="preview = !preview">
-          {{ preview ? '继续编辑' : '预览' }}
-        </button>
+        <span class="field__bar-right">
+          <label class="pb-btn upload-btn">
+            {{ uploading ? '上传中…' : '插入图片' }}
+            <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" @change="uploadImage" />
+          </label>
+          <button class="pb-btn pb-btn--ghost" type="button" @click="preview = !preview">
+            {{ preview ? '继续编辑' : '预览' }}
+          </button>
+        </span>
       </div>
       <textarea v-if="!preview" v-model="body" class="input input--mono" rows="14" />
       <div v-else class="preview pb-panel">
@@ -246,6 +273,18 @@ function toggleEntity(id: string) {
 }
 .hint--bad {
   color: #b4544a;
+}
+.field__bar-right {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pb-space-2);
+}
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+}
+.upload-btn input {
+  display: none;
 }
 .preview {
   padding: var(--pb-space-3);

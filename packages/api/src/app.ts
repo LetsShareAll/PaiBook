@@ -12,6 +12,10 @@ export interface ApiEnv {
 export interface ApiContext {
   db: Db
   game: GameId
+  /** 站点挂载前缀，用于生成带前缀的资源 URL（门厅为空串）。 */
+  basePath: string
+  /** R2 绑定；未配置时上传接口会明确报错，而不是静默失败。 */
+  media?: R2Bucket
   env: ApiEnv
   secureCookies: boolean
   /** 内容状态变化后的副作用（如边缘缓存 purge）。 */

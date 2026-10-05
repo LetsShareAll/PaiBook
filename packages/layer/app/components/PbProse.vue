@@ -116,6 +116,16 @@ const html = computed(() => marked.parse(props.markdown) as string)
   background: var(--pb-surface-alt);
 }
 
+.pb-prose :deep(img) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: var(--pb-space-3) 0;
+  border: var(--pb-border-width) solid var(--pb-edge);
+  border-radius: var(--pb-radius-md);
+  background: var(--pb-surface-alt);
+}
+
 .pb-prose :deep(hr) {
   height: 1px;
   margin: var(--pb-space-4) 0;

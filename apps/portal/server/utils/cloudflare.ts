@@ -2,6 +2,7 @@ import type { H3Event } from 'h3'
 
 export interface SiteEnv {
   DB: D1Database
+  MEDIA?: R2Bucket
   SITE_GAME?: string
   ADMIN_PASSWORD?: string
   SESSION_SECRET?: string

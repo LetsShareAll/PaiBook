@@ -20,6 +20,9 @@ npx wrangler login
 # ② 建库并把返回的 database_id 填进四个 wrangler.jsonc
 npx wrangler d1 create paibook
 
+# ②b 建图片存储桶（正文插图用）
+npx wrangler r2 bucket create paibook-media
+
 # ③ 给 GitHub 仓库加两个 secret（CI 部署用）
 gh secret set CLOUDFLARE_API_TOKEN --repo LetsShareAll/PaiBook
 gh secret set CLOUDFLARE_ACCOUNT_ID --repo LetsShareAll/PaiBook

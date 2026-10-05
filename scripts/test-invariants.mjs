@@ -25,10 +25,12 @@ const check = (name, ok, detail = '') => {
 }
 
 async function call(path, init = {}) {
+  // FormData 必须让 fetch 自己带 boundary，不能写死 content-type
+  const isForm = typeof FormData !== 'undefined' && init.body instanceof FormData
   return fetch(`${base}${path}`, {
     ...init,
     headers: {
-      'content-type': 'application/json',
+      ...(isForm ? {} : { 'content-type': 'application/json' }),
       ...(cookie ? { cookie } : {}),
       ...(init.headers ?? {}),
     },
@@ -154,7 +156,40 @@ if (entityBody.id) {
   }
 }
 
-// --- 6. 清理：删掉测试条目后，前台与搜索都应干净 ---
+// --- 6. 图片上传（R2） ---
+const pixel = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+  'base64',
+)
+const anonUpload = await fetch(`${base}/api/admin/uploads`, {
+  method: 'POST',
+  body: (() => {
+    const form = new FormData()
+    form.append('file', new Blob([pixel], { type: 'image/png' }), 'pixel.png')
+    return form
+  })(),
+})
+check('未登录上传图片返回 401', anonUpload.status === 401, `status=${anonUpload.status}`)
+
+const form = new FormData()
+form.append('file', new Blob([pixel], { type: 'image/png' }), 'pixel.png')
+const uploaded = await call('/api/admin/uploads', { method: 'POST', body: form })
+const uploadedBody = await uploaded.json().catch(() => ({}))
+check('登录后上传成功并返回 URL', uploaded.status === 201 && Boolean(uploadedBody.url), JSON.stringify(uploadedBody).slice(0, 120))
+
+if (uploadedBody.url) {
+  const fetched = await fetch(`${uploadedBody.url.startsWith('http') ? uploadedBody.url : `${new URL(base).origin}${uploadedBody.url}`}`)
+  const bytes = Buffer.from(await fetched.arrayBuffer())
+  check('取回的图片类型正确', fetched.status === 200 && fetched.headers.get('content-type') === 'image/png', `status=${fetched.status}`)
+  check('取回的图片与原图逐字节一致', bytes.equals(pixel), `${bytes.length} vs ${pixel.length}`)
+}
+
+const badForm = new FormData()
+badForm.append('file', new Blob(['not an image'], { type: 'text/plain' }), 'x.txt')
+const badUpload = await call('/api/admin/uploads', { method: 'POST', body: badForm })
+check('非图片类型被拒绝（415）', badUpload.status === 415, `status=${badUpload.status}`)
+
+// --- 7. 清理：删掉测试条目后，前台与搜索都应干净 ---
 for (const id of created.guides) {
   await call(`/api/admin/guides/${id}`, { method: 'DELETE' })
 }

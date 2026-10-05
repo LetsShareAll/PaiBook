@@ -5,6 +5,12 @@
   "vars": {
     "SITE_GAME": "genshin"
   },
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "paibook-media"
+    }
+  ],
   "d1_databases": [
     {
       "binding": "DB",
