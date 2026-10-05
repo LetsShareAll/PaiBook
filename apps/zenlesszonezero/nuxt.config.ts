@@ -13,8 +13,8 @@ export default defineNuxtConfig({
     : {},
   app: {
     head: {
-      htmlAttrs: { 'data-site': 'genshin' },
-      title: 'PaiBook · 原神',
+      htmlAttrs: { 'data-site': 'zenlesszonezero' },
+      title: 'PaiBook · 绝区零',
     },
   },
 })

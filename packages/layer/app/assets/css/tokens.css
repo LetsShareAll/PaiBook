@@ -70,6 +70,18 @@
   --pb-shadow: 0 1px 3px rgb(0 0 0 / 50%);
 }
 
+[data-site='portal'] {
+  --pb-paper: #f4f1ea;
+  --pb-surface: #fffefb;
+  --pb-surface-alt: #faf7f0;
+  --pb-ink: #2f2c28;
+  --pb-muted: #857f74;
+  --pb-edge: #e4ddd0;
+  --pb-accent: #c8a86b;
+  --pb-accent-ink: #453718;
+  --pb-accent-soft: #efe4cc;
+}
+
 * {
   box-sizing: border-box;
 }

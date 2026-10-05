@@ -8,13 +8,12 @@ export default defineNuxtConfig({
   routeRules: process.env.NODE_ENV === "production"
     ? {
       '/': { swr: 60 },
-      '/guides/**': { swr: 60 },
       }
     : {},
   app: {
     head: {
-      htmlAttrs: { 'data-site': 'genshin' },
-      title: 'PaiBook · 原神',
+      htmlAttrs: { 'data-site': 'portal' },
+      title: 'PaiBook · 派书',
     },
   },
 })

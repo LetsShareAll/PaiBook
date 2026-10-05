@@ -76,8 +76,7 @@ export async function listPublishedGuides(db: Db, gameId: GameId): Promise<Guide
   return rows.map((row) => toSummary(row, entities.get(row.id) ?? []))
 }
 
-export async function getPublishedGuide(db: Db, gameId: GameId, slug: string): Promise<GuideDetail | null> {
-  const [row] = await db
+export async function getPublishedGuide(db: Db, gameId: GameId, slug: string): Promise<GuideDetail | null> {  const [row] = await db
     .select({ ...guideColumns, body: guide.body })
     .from(guide)
     .leftJoin(version, eq(version.id, guide.versionId))
@@ -87,4 +86,21 @@ export async function getPublishedGuide(db: Db, gameId: GameId, slug: string): P
   if (!row) return null
   const entities = await loadEntities(db, [row.id])
   return { ...toSummary(row, entities.get(row.id) ?? []), body: row.body }
+}
+
+/** 跨游戏的最近更新，供门厅使用。 */
+export async function listRecentGuides(db: Db, limit = 12): Promise<GuideSummary[]> {
+  const rows = await db
+    .select(guideColumns)
+    .from(guide)
+    .leftJoin(version, eq(version.id, guide.versionId))
+    .where(eq(guide.status, 'published'))
+    .orderBy(desc(guide.publishedAt))
+    .limit(limit)
+
+  const entities = await loadEntities(
+    db,
+    rows.map((row) => row.id),
+  )
+  return rows.map((row) => toSummary(row, entities.get(row.id) ?? []))
 }

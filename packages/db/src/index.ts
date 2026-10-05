@@ -1,6 +1,6 @@
 export * from './schema.ts'
 export { createDb, type Db } from './client.ts'
-export { listPublishedGuides, getPublishedGuide } from './repositories/guides.ts'
+export { listPublishedGuides, getPublishedGuide, listRecentGuides } from './repositories/guides.ts'
 export {
   listGuidesForAdmin,
   getGuideForAdmin,

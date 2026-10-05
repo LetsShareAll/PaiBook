@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { gameCatalog } from '@paibook/contracts'
 
-const game = gameCatalog.genshin
+const game = gameCatalog.zenlesszonezero
 </script>
 
 <template>

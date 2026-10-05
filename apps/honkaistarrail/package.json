@@ -1,0 +1,25 @@
+{
+  "name": "@paibook/honkaistarrail",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "typecheck": "nuxt typecheck",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@paibook/api": "workspace:*",
+    "@paibook/contracts": "workspace:*",
+    "@paibook/db": "workspace:*",
+    "@paibook/layer": "workspace:*",
+    "nuxt": "^4.5.2",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1"
+  },
+  "devDependencies": {
+    "miniflare": "5.20261001.0-alpha",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.147.0"
+  }
+}
