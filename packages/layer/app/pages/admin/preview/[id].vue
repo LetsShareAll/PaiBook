@@ -53,7 +53,7 @@ onMounted(async () => {
   font-size: 14px;
 }
 .back:hover {
-  color: var(--pb-accent-ink);
+  color: var(--pb-accent-foreground);
 }
 .error {
   margin: 0;

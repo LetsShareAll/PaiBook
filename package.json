@@ -17,7 +17,8 @@
     "reindex:local": "node scripts/reindex-local.mjs",
     "og:build": "node scripts/build-og-images.mjs",
     "test:invariants": "node scripts/test-invariants.mjs",
-    "preflight": "bash scripts/preflight-deploy.sh"
+    "preflight": "bash scripts/preflight-deploy.sh",
+    "check:contrast": "node scripts/check-contrast.mjs"
   },
   "devDependencies": {
     "playwright": "^1.63.0"

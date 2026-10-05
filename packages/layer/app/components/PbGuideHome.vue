@@ -91,7 +91,7 @@ const hidden = computed(() => props.guides.length - visibleGuides.value.length)
   cursor: pointer;
 }
 .filter__link {
-  color: var(--pb-accent-ink);
+  color: var(--pb-accent-foreground);
   text-underline-offset: 3px;
 }
 .list {
@@ -131,7 +131,7 @@ const hidden = computed(() => props.guides.length - visibleGuides.value.length)
   border-bottom: 1px solid var(--pb-accent);
 }
 .link-item__title:hover {
-  color: var(--pb-accent-ink);
+  color: var(--pb-accent-foreground);
 }
 .link-item__meta {
   display: flex;

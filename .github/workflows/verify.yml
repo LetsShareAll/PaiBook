@@ -48,6 +48,9 @@ jobs:
             echo "port $port -> $code"
           done
 
+      - name: 对比度体检（四套主题按 WCAG 公式核对）
+        run: node scripts/check-contrast.mjs
+
       - name: 冒烟检查（存活 / 接口 / 上锁 / robots / sitemap / 分享卡片）
         run: bash scripts/smoke.sh
 

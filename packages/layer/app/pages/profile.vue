@@ -143,7 +143,7 @@ async function reset() {
 .chip--on {
   border-color: var(--pb-accent);
   background: var(--pb-accent-soft);
-  color: var(--pb-accent-ink);
+  color: var(--pb-accent-foreground);
 }
 .io {
   margin-top: var(--pb-space-5);

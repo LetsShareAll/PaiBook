@@ -49,7 +49,7 @@ defineProps<{
   letter-spacing: -0.005em;
 }
 .pb-card__link:hover .pb-card__title {
-  color: var(--pb-accent-ink);
+  color: var(--pb-accent-foreground);
 }
 .pb-card__meta {
   display: flex;

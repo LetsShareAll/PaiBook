@@ -26,7 +26,7 @@
 .pb-btn--primary {
   border-color: var(--pb-accent);
   background: var(--pb-accent-soft);
-  color: var(--pb-accent-ink);
+  color: var(--pb-accent-foreground);
   font-weight: 600;
 }
 

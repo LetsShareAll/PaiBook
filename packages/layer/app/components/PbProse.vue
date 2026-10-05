@@ -61,7 +61,7 @@ const html = computed(() => marked.parse(props.markdown) as string)
 }
 
 .pb-prose :deep(a) {
-  color: var(--pb-accent-ink);
+  color: var(--pb-accent-foreground);
   text-decoration-color: var(--pb-accent);
   text-underline-offset: 3px;
 }

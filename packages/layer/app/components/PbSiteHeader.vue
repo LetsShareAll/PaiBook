@@ -108,7 +108,7 @@ const site = computed(() => {
   text-decoration: none;
 }
 .pb-header__navlink:hover {
-  color: var(--pb-accent-ink);
+  color: var(--pb-accent-foreground);
 }
 .pb-header__search {
   margin-top: var(--pb-space-2);

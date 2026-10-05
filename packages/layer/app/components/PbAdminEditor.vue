@@ -264,7 +264,7 @@ function toggleEntity(id: string) {
 .chip--on {
   border-color: var(--pb-accent);
   background: var(--pb-accent-soft);
-  color: var(--pb-accent-ink);
+  color: var(--pb-accent-foreground);
 }
 .hint {
   margin: var(--pb-space-1) 0 0;
