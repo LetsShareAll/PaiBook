@@ -2,9 +2,14 @@ node_modules/
 .nuxt/
 .output/
 .wrangler/
+.wrangler-home/
+.dev-home/
+.screenshots/
+browser-screenshots/
 .data/
 dist/
 *.log
 .env
 .env.*
 .dev.vars
+.pnpm-store/
