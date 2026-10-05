@@ -9,7 +9,6 @@
     "nuxt.config.ts"
   ],
   "dependencies": {
-    "@nuxt/fonts": "^0.14.0",
     "@paibook/contracts": "workspace:*",
     "marked": "^18.0.14"
   }

@@ -1,6 +1,11 @@
 /* PaiBook 设计 token：三站共用同一套结构，各站只换值。
    [data-site] 由各应用的 app.head.htmlAttrs 设置。
-   资产红线（ADR-0007）：所有纹样自绘，不使用官方素材与游戏内字体。 */
+
+   资产红线（ADR-0007）：所有纹样自绘，不使用官方素材与游戏内字体。
+
+   字体策略：走系统 CJK 字体栈（PingFang SC / 微软雅黑 / 宋体 等），
+   不打包任何 webfont——游戏内字体不能用，而 CJK webfont 动辄数 MB，
+   对一个攻略站不值得。若将来要统一观感，再自托管 OFL 子集字体（思源黑体等）。 */
 
 :root {
   --pb-font-sans: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
