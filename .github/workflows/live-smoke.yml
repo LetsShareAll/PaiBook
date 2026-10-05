@@ -28,12 +28,15 @@ jobs:
         run: bash scripts/smoke.sh "${{ github.event.inputs.base || 'https://paibook.lssa.fun' }}"
 
       # 手动勾选时才跑：它会在线上建一篇临时攻略、发布、再删掉。
+      # 注意：secrets 上下文不能出现在步骤的 if 里（GitHub 会拒绝解析整个文件），
+      # 所以这里只判断输入，secret 是否为空在 shell 里判断。
       - name: 验证「发布即生效」（边缘缓存 purge）
-        if: ${{ github.event.inputs.check_purge == 'true' && secrets.ADMIN_PASSWORD != '' }}
+        if: ${{ github.event.inputs.check_purge == 'true' }}
         env:
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-        run: bash scripts/verify-purge-live.sh
-
-      - name: 未配置 ADMIN_PASSWORD 的提示
-        if: ${{ github.event.inputs.check_purge == 'true' && secrets.ADMIN_PASSWORD == '' }}
-        run: echo "::notice::勾选了 purge 验证，但仓库没有 ADMIN_PASSWORD secret，已跳过"
+        run: |
+          if [ -z "${ADMIN_PASSWORD}" ]; then
+            echo "::notice::仓库未配置 ADMIN_PASSWORD secret，跳过 purge 验收"
+            exit 0
+          fi
+          bash scripts/verify-purge-live.sh
