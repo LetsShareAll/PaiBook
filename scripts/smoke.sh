@@ -7,11 +7,14 @@ set -uo pipefail
 
 BASE="${1:-}"
 fail=0
+# 可选：给每次 curl 追加参数。用途之一是"边缘可达但 DNS 还没解析"时绕过解析验收，例如：
+#   SMOKE_CURL_ARGS="--resolve paibook.lssa.fun:443:172.67.204.5 -k" bash scripts/smoke.sh https://paibook.lssa.fun
+CURL_ARGS=${SMOKE_CURL_ARGS:-}
 
 check() {
   local name="$1" url="$2" expect="$3" needle="${4:-}"
   local code
-  code=$(curl -s -m 20 -o /tmp/pb-smoke-body -w "%{http_code}" "$url" 2>/dev/null || echo 000)
+  code=$(curl -s -m 20 $CURL_ARGS -o /tmp/pb-smoke-body -w "%{http_code}" "$url" 2>/dev/null || echo 000)
   if [ "$code" != "$expect" ]; then
     printf 'FAIL %-30s %-4s (期望 %s)  %s\n' "$name" "$code" "$expect" "$url"
     fail=1
@@ -31,7 +34,7 @@ check_game() {
   printf '\n--- %s%s ---\n' "$root" "$prefix"
   check "$label 首页" "$root$prefix/" 200
   check "$label robots" "$root$prefix/robots.txt" 200 "Sitemap:"
-  check "$label sitemap" "$root$prefix/sitemap.xml" 200 "guides/"
+  check "$label sitemap" "$root$prefix/sitemap.xml" 200 "<urlset"
   check "$label 攻略接口" "$root$prefix/api/guides" 200 "\"items\""
   check "$label 实体接口" "$root$prefix/api/entities" 200 "\"items\""
   check "$label 搜索" "$root$prefix/api/search?q=%E7%A4%BA%E4%BE%8B" 200

@@ -189,7 +189,11 @@ badForm.append('file', new Blob(['not an image'], { type: 'text/plain' }), 'x.tx
 const badUpload = await call('/api/admin/uploads', { method: 'POST', body: badForm })
 check('非图片类型被拒绝（415）', badUpload.status === 415, `status=${badUpload.status}`)
 
-// --- 7. 内容导出 / 导入往返 ---
+// --- 7. 站点地图收录（这里有已发布条目，断言才有意义）---
+const sitemap = await (await fetch(`${base}/sitemap.xml`)).text()
+check('sitemap 收录已发布攻略', sitemap.includes(`/guides/${slug}`), '未在 sitemap 中找到该 slug')
+
+// --- 8. 内容导出 / 导入往返 ---
 const exported = await (await call('/api/admin/export')).json()
 check('导出包含刚发布的条目', exported.schema === 1 && exported.guides.some((item) => item.slug === slug))
 
@@ -213,7 +217,7 @@ const wrongGame = await call('/api/admin/import', {
 })
 check('跨游戏导入被拒绝（400）', wrongGame.status === 400, `status=${wrongGame.status}`)
 
-// --- 8. 清理：删掉测试条目后，前台与搜索都应干净 ---
+// --- 9. 清理：删掉测试条目后，前台与搜索都应干净 ---
 for (const id of created.guides) {
   await call(`/api/admin/guides/${id}`, { method: 'DELETE' })
 }

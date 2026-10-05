@@ -12,6 +12,7 @@
     }
   ],
   "routes": [
+    { "pattern": "paibook.lssa.fun/zenlesszonezero", "zone_name": "lssa.fun" },
     { "pattern": "paibook.lssa.fun/zenlesszonezero/*", "zone_name": "lssa.fun" }
   ],
   "d1_databases": [
