@@ -1,0 +1,53 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          cache: pnpm
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      # 本地 D1（miniflare）不需要 Cloudflare 凭据，所以这一整套验证在 CI 里跑得起来。
+      - name: 初始化四个应用的本地数据库
+        run: bash scripts/local-db.sh
+
+      - name: 启动四个站
+        run: |
+          for pair in genshin:4123 honkaistarrail:4124 zenlesszonezero:4125 portal:4126; do
+            app="${pair%%:*}"; port="${pair##*:}"
+            pnpm --filter "@paibook/$app" dev --port "$port" > "/tmp/dev-$app.log" 2>&1 &
+          done
+          for port in 4123 4124 4125 4126; do
+            for i in $(seq 1 90); do
+              code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:$port/" || echo 000)
+              case "$code" in 200|302) break ;; esac
+              sleep 2
+            done
+            echo "port $port -> $code"
+          done
+
+      - name: 冒烟检查（存活 / 接口 / 上锁 / robots / sitemap / 分享卡片）
+        run: bash scripts/smoke.sh
+
+      - name: 核心不变量回归测试
+        run: node scripts/test-invariants.mjs
+
+      - name: 失败时输出站点日志
+        if: failure()
+        run: tail -60 /tmp/dev-*.log
