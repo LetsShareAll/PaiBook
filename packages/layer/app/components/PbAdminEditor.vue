@@ -80,6 +80,15 @@ function toggleEntity(id: string) {
         <button v-else class="pb-btn" type="button" :disabled="busy" @click="emit('status', 'draft', payload())">
           取消发布
         </button>
+        <a
+          v-if="initial"
+          class="pb-btn"
+          :href="apiUrl(`/admin/preview/${initial.id}`)"
+          target="_blank"
+          rel="noopener"
+        >
+          预览真实页面
+        </a>
         <button class="pb-btn pb-btn--ghost" type="button" @click="emit('cancel')">返回列表</button>
       </div>
     </header>

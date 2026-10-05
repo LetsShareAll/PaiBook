@@ -1,6 +1,7 @@
 import { z } from 'zod'
-import { guideStatusSchema, guideSummarySchema } from './guide.ts'
-import { entityKindSchema } from './entity.ts'
+import { guideStatusSchema, guideSummarySchema, versionRefSchema } from './guide.ts'
+import { entityKindSchema, entityRefSchema } from './entity.ts'
+import { gameIdSchema } from './game.ts'
 
 export const guideSlugSchema = z
   .string()
@@ -31,10 +32,13 @@ export const adminGuideItemSchema = z.object({
 export type AdminGuideItem = z.infer<typeof adminGuideItemSchema>
 
 export const adminGuideDetailSchema = adminGuideItemSchema.extend({
+  gameId: gameIdSchema,
   summary: z.string(),
   body: z.string(),
   versionId: z.string().nullable(),
+  version: versionRefSchema.nullable(),
   entityIds: z.array(z.string()),
+  entities: z.array(entityRefSchema),
 })
 export type AdminGuideDetail = z.infer<typeof adminGuideDetailSchema>
 

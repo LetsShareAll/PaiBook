@@ -37,12 +37,23 @@ export async function getGuideForAdmin(db: Db, gameId: GameId, id: string): Prom
 
   if (!row) return null
 
+  const [versionRow] = row.versionId
+    ? await db.select({ label: version.label }).from(version).where(eq(version.id, row.versionId)).limit(1)
+    : []
+
   const links = await db
-    .select({ entityId: guideEntity.entityId })
+    .select({ entityId: guideEntity.entityId, kind: entity.kind, nameZh: entity.nameZh })
     .from(guideEntity)
+    .innerJoin(entity, eq(entity.id, guideEntity.entityId))
     .where(eq(guideEntity.guideId, id))
 
-  return { ...row, entityIds: links.map((link) => link.entityId) }
+  return {
+    ...row,
+    gameId,
+    entityIds: links.map((link) => link.entityId),
+    entities: links.map((link) => ({ id: link.entityId, kind: link.kind as EntityKind, nameZh: link.nameZh })),
+    version: row.versionId && versionRow?.label ? { id: row.versionId, label: versionRow.label } : null,
+  }
 }
 
 export interface GuideWriteInput {

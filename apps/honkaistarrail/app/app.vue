@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { gameCatalog } from '@paibook/contracts'
-
-const game = gameCatalog.honkaistarrail
+const branding = useSiteBranding()
 </script>
 
 <template>
   <div class="pb-app">
-    <PbSiteHeader :title="`派蒙的应急手册 · ${game.tagline}`" tagline="不是应急食品，是应急手册！" />
+    <PbSiteHeader :title="branding.headerTitle" :tagline="branding.tagline" />
     <NuxtPage />
-    <PbSiteFooter :game="game.titleZh" :attribution="game.attribution" />
+    <PbSiteFooter :game="branding.gameName" :attribution="branding.attribution" />
   </div>
 </template>

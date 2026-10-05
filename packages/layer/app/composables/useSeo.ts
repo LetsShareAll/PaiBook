@@ -56,3 +56,15 @@ export function useGuideSeo(guide: { title: string; summary: string; slug: strin
     articlePublishedTime: guide.publishedAt ?? undefined,
   })
 }
+
+/** 站点品牌信息：header 标题、标语、页脚里的游戏名与（星铁必需的）署名句。 */
+export function useSiteBranding() {
+  const { game } = siteContext()
+  const entry = game ? gameCatalog[game as GameId] : undefined
+  return {
+    headerTitle: entry ? `派蒙的应急手册 · ${entry.tagline}` : 'PaiBook · 派书',
+    tagline: '不是应急食品，是应急手册！',
+    gameName: entry ? entry.titleZh : '《原神》《崩坏：星穹铁道》《绝区零》',
+    attribution: entry?.attribution,
+  }
+}
