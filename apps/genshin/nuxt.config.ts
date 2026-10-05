@@ -4,6 +4,10 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'cloudflare_module',
   },
+  routeRules: {
+    '/': { swr: 60 },
+    '/guides/**': { swr: 60 },
+  },
   app: {
     head: {
       htmlAttrs: { 'data-site': 'genshin' },

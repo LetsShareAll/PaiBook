@@ -2,10 +2,20 @@ import { Hono } from 'hono'
 import type { GameId } from '@paibook/contracts'
 import type { Db } from '@paibook/db'
 import { getPublishedGuide, listPublishedGuides } from '@paibook/db'
+import { createAdminApp } from './admin.ts'
+
+export interface ApiEnv {
+  ADMIN_PASSWORD?: string
+  SESSION_SECRET?: string
+}
 
 export interface ApiContext {
   db: Db
   game: GameId
+  env: ApiEnv
+  secureCookies: boolean
+  /** 内容状态变化后的副作用（如边缘缓存 purge）。 */
+  onContentChanged?: (change: { slug: string; status: 'draft' | 'published' }) => Promise<void>
 }
 
 export function createApiApp(ctx: ApiContext) {
@@ -23,6 +33,8 @@ export function createApiApp(ctx: ApiContext) {
     if (!guide) return c.json({ error: 'not_found' }, 404)
     return c.json(guide)
   })
+
+  app.route('/admin', createAdminApp(ctx))
 
   return app
 }

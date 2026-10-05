@@ -1,0 +1,42 @@
+/* 通用按钮：三站共用，颜色走 token。 */
+.pb-btn {
+  padding: 5px 14px;
+  border: 1px solid var(--pb-edge);
+  border-radius: var(--pb-radius-sm);
+  background: var(--pb-surface);
+  color: var(--pb-ink);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.pb-btn:hover:not(:disabled) {
+  border-color: var(--pb-accent);
+}
+
+.pb-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pb-btn--primary {
+  border-color: var(--pb-accent);
+  background: var(--pb-accent-soft);
+  color: var(--pb-accent-ink);
+  font-weight: 600;
+}
+
+.pb-btn--ghost {
+  border-color: transparent;
+  background: none;
+  color: var(--pb-muted);
+}
+
+.pb-btn--ghost:hover:not(:disabled) {
+  color: var(--pb-ink);
+  border-color: transparent;
+}

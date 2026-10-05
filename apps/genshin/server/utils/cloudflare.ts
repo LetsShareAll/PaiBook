@@ -3,6 +3,8 @@ import type { H3Event } from 'h3'
 export interface SiteEnv {
   DB: D1Database
   SITE_GAME: string
+  ADMIN_PASSWORD?: string
+  SESSION_SECRET?: string
 }
 
 export function useSiteEnv(event: H3Event): SiteEnv {

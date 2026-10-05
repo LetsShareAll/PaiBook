@@ -2,7 +2,10 @@ import { fileURLToPath } from 'node:url'
 
 export default defineNuxtConfig({
   modules: ['@nuxt/fonts'],
-  css: [fileURLToPath(new URL('./app/assets/css/tokens.css', import.meta.url))],
+  css: [
+    fileURLToPath(new URL('./app/assets/css/tokens.css', import.meta.url)),
+    fileURLToPath(new URL('./app/assets/css/controls.css', import.meta.url)),
+  ],
   fonts: {
     processCSSVariables: true,
     families: [
