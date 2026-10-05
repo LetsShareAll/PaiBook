@@ -89,6 +89,13 @@ bash scripts/smoke.sh https://paibook.lssa.fun
 脚本查不到、仍需人看一遍的：
 
 - [ ] 三站主题确实各不相同（原神羊皮纸 / 星铁星海 / 绝区零霓虹）。
-- [ ] 各站 `/admin` 能登录；**发布一篇后前台立刻可见**——这条是边缘缓存 purge 的真正验收点（ADR-0002）。
+- [ ] **发布一篇后前台立刻可见**——边缘缓存 purge 的真正验收点（ADR-0002）。这条只能在真实 Cloudflare 上验，
+      所以给了独立脚本（它自己建、自己删，不留垃圾）：
+
+      ```bash
+      ADMIN_PASSWORD=你的后台密码 bash scripts/verify-purge-live.sh
+      ```
+
+      或者给仓库加 `ADMIN_PASSWORD` secret，然后在 Actions 里手动触发 `live-smoke` 并勾选 `check_purge`。
 - [ ] 搜索：分站只出本游戏结果；门厅跨游戏。
 - [ ] 404 页面是品牌化的（随便访问一个不存在的路径）。
