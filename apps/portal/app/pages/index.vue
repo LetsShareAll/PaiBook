@@ -25,20 +25,21 @@ useSiteSeo()
     <p class="pb-muted intro">三款游戏，三本站内手册。攻略都由本站撰写与整理。</p>
 
     <nav class="games">
-      <NuxtLink v-for="game in games?.items ?? []" :key="game.id" class="game pb-panel" :to="game.href">
+      <!-- 跨 Worker 的链接必须用普通 <a>：NuxtLink 会走本应用的路由，而游戏站是另一个 Worker -->
+      <a v-for="game in games?.items ?? []" :key="game.id" class="game pb-panel" :href="game.href">
         <span class="game__title">{{ game.titleZh }}</span>
         <span class="game__tagline pb-muted">{{ game.tagline }}</span>
         <span class="game__en pb-muted">{{ game.titleEn }}</span>
-      </NuxtLink>
+      </a>
     </nav>
 
     <section v-if="recent?.items.length" class="recent">
       <h2 class="section">最近更新</h2>
       <ul class="list">
         <li v-for="guide in recent.items" :key="guide.id" class="item">
-          <NuxtLink class="item__link" :to="`/${guide.gameId}/guides/${guide.slug}`">
+          <a class="item__link" :href="`/${guide.gameId}/guides/${guide.slug}`">
             <span class="item__title">{{ guide.title }}</span>
-          </NuxtLink>
+          </a>
           <span class="pb-badge">{{ titleOf(guide.gameId) }}</span>
           <span v-if="guide.publishedAt" class="pb-muted item__date">{{ guide.publishedAt.slice(0, 10) }}</span>
         </li>

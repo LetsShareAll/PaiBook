@@ -50,6 +50,8 @@ const site = computed(() => {
 
       <div class="pb-header__nav">
         <NuxtLink class="pb-header__navlink" to="/profile">我的档案</NuxtLink>
+        <span class="pb-header__sep" aria-hidden="true">·</span>
+        <NuxtLink class="pb-header__navlink" to="/admin">写作台</NuxtLink>
       </div>
 
       <form class="pb-header__search" :action="apiUrl('/search')" method="get">
@@ -106,6 +108,10 @@ const site = computed(() => {
   color: var(--pb-muted);
   font-size: 13px;
   text-decoration: none;
+}
+.pb-header__sep {
+  margin: 0 var(--pb-space-2);
+  color: var(--pb-edge);
 }
 .pb-header__navlink:hover {
   color: var(--pb-accent-foreground);

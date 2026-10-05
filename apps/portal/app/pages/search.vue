@@ -28,10 +28,10 @@ useHead({ title: '搜索 · PaiBook' })
 
     <ul class="list">
       <li v-for="guide in data?.items ?? []" :key="guide.id" class="item pb-panel">
-        <NuxtLink class="item__link" :to="`/${guide.gameId}/guides/${guide.slug}`">
+        <a class="item__link" :href="`/${guide.gameId}/guides/${guide.slug}`">
           <span class="item__title">{{ guide.title }}</span>
           <span class="pb-muted item__summary">{{ guide.summary }}</span>
-        </NuxtLink>
+        </a>
         <span class="pb-badge">{{ titleOf(guide.gameId) }}</span>
       </li>
     </ul>
