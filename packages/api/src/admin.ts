@@ -1,11 +1,14 @@
 import { Hono } from 'hono'
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
 import { createMiddleware } from 'hono/factory'
-import { guideWriteSchema, loginSchema } from '@paibook/contracts'
+import { guideWriteSchema, linkWriteSchema, loginSchema } from '@paibook/contracts'
 import {
   createGuide,
+  createLink,
+  deleteLink,
   getGuideForAdmin,
   listGuidesForAdmin,
+  listLinks,
   listTaxonomy,
   reindexGuideSearch,
   setGuideStatus,
@@ -87,6 +90,25 @@ export function createAdminApp(ctx: ApiContext) {
 
   /** 重建本站搜索索引（首次建表或改了分词规则时用）。 */
   app.post('/reindex', async (c) => c.json({ count: await reindexGuideSearch(ctx.db, ctx.game) }))
+
+  app.get('/links', async (c) => c.json({ items: await listLinks(ctx.db, ctx.game) }))
+
+  app.post('/links', async (c) => {
+    const parsed = linkWriteSchema.safeParse(await c.req.json().catch(() => null))
+    if (!parsed.success) return c.json({ error: 'invalid_payload', issues: parsed.error.issues }, 400)
+
+    const id = await createLink(ctx.db, ctx.game, parsed.data)
+    await ctx.onContentChanged?.({ slug: '', status: 'published' })
+    return c.json({ id }, 201)
+  })
+
+  app.delete('/links/:id', async (c) => {
+    const removed = await deleteLink(ctx.db, ctx.game, c.req.param('id'))
+    if (!removed) return c.json({ error: 'not_found' }, 404)
+
+    await ctx.onContentChanged?.({ slug: '', status: 'published' })
+    return c.json({ ok: true })
+  })
 
   app.post('/guides/:id/status', async (c) => {
     const body = (await c.req.json().catch(() => null)) as { status?: string } | null

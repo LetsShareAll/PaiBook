@@ -34,18 +34,6 @@ export const guideListSchema = z.object({
 })
 export type GuideList = z.infer<typeof guideListSchema>
 
-export const linkSchema = z.object({
-  id: z.string(),
-  gameId: gameIdSchema,
-  title: z.string(),
-  summary: z.string(),
-  url: z.string(),
-  sourceName: z.string().nullable(),
-  author: z.string().nullable(),
-  entities: z.array(entityRefSchema),
-})
-export type GuideLink = z.infer<typeof linkSchema>
-
 export const searchResultSchema = z.object({
   items: z.array(guideSummarySchema),
   total: z.number(),

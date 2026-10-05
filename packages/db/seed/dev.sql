@@ -99,3 +99,18 @@ INSERT OR REPLACE INTO guide_entity (guide_id, entity_id) VALUES
   ('honkaistarrail:demo-1', 'honkaistarrail:demo-enemy-a'),
   ('zenlesszonezero:demo-1', 'zenlesszonezero:demo-agent-a'),
   ('zenlesszonezero:demo-1', 'zenlesszonezero:demo-bangboo-a');
+
+INSERT OR REPLACE INTO link (id, game_id, title, summary, url, source_name, author, version_id) VALUES
+  ('genshin:link:demo-1', 'genshin', '示例外链：别处的配队详解',
+   '站外推荐条目，用来验证 Link 模型与前台展示（本站不承载正文）。',
+   'https://example.com/genshin-team', '示例来源', '示例作者', NULL),
+  ('honkaistarrail:link:demo-1', 'honkaistarrail', '示例外链：星铁队伍构建',
+   '验证星铁站的外链区块与署名展示。',
+   'https://example.com/hsr-team', '示例来源', '示例作者', NULL),
+  ('zenlesszonezero:link:demo-1', 'zenlesszonezero', '示例外链：代理人连携',
+   '验证绝区零站的外链区块。',
+   'https://example.com/zzz-team', '示例来源', '示例作者', NULL);
+
+INSERT OR REPLACE INTO link_entity (link_id, entity_id) VALUES
+  ('genshin:link:demo-1', 'genshin:demo-char-a'),
+  ('honkaistarrail:link:demo-1', 'honkaistarrail:demo-char-a');
