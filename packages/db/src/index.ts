@@ -15,6 +15,7 @@ export {
   listGuidesForAdmin,
   getGuideForAdmin,
   createGuide,
+  deleteGuide,
   updateGuide,
   setGuideStatus,
   listTaxonomy,

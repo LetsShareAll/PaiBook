@@ -15,7 +15,9 @@
     "typecheck": "pnpm -r --filter \"./apps/*\" typecheck",
     "db:local": "bash scripts/local-db.sh",
     "reindex:local": "node scripts/reindex-local.mjs",
-    "og:build": "node scripts/build-og-images.mjs"
+    "og:build": "node scripts/build-og-images.mjs",
+    "test:invariants": "node scripts/test-invariants.mjs",
+    "preflight": "bash scripts/preflight-deploy.sh"
   },
   "devDependencies": {
     "playwright": "^1.63.0"

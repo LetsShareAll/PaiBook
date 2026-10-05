@@ -1,4 +1,4 @@
-import { and, asc, desc, eq } from 'drizzle-orm'
+import { and, asc, desc, eq, sql } from 'drizzle-orm'
 import type { AdminGuideDetail, AdminGuideItem, EntityKind, GameId, Taxonomy } from '@paibook/contracts'
 import type { Db } from '../client.ts'
 import { entity, guide, guideEntity, version } from '../schema.ts'
@@ -147,4 +147,19 @@ export async function listEntities(db: Db, gameId: GameId): Promise<{ id: string
     .orderBy(asc(entity.nameZh))
 
   return rows.map((row) => ({ id: row.id, kind: row.kind as EntityKind, nameZh: row.nameZh }))
+}
+
+/** 删除攻略：连带实体关联与搜索索引一起清掉，避免留下搜得到的孤儿。 */
+export async function deleteGuide(db: Db, gameId: GameId, id: string): Promise<boolean> {
+  const [existing] = await db
+    .select({ id: guide.id })
+    .from(guide)
+    .where(and(eq(guide.gameId, gameId), eq(guide.id, id)))
+    .limit(1)
+  if (!existing) return false
+
+  await db.delete(guideEntity).where(eq(guideEntity.guideId, id))
+  await db.run(sql`DELETE FROM guide_fts WHERE guide_id = ${id}`)
+  await db.delete(guide).where(eq(guide.id, id))
+  return true
 }

@@ -5,6 +5,7 @@ import { entityWriteSchema, guideWriteSchema, linkWriteSchema, loginSchema, vers
 import {
   createEntity,
   createGuide,
+  deleteGuide,
   createVersion,
   deleteEntity,
   deleteVersion,
@@ -89,6 +90,14 @@ export function createAdminApp(ctx: ApiContext) {
 
     await updateGuide(ctx.db, id, parsed.data)
     await syncGuideSearch(ctx.db, id)
+    return c.json({ ok: true })
+  })
+
+  app.delete('/guides/:id', async (c) => {
+    const removed = await deleteGuide(ctx.db, ctx.game, c.req.param('id'))
+    if (!removed) return c.json({ error: 'not_found' }, 404)
+
+    await ctx.onContentChanged?.({ slug: '', status: 'draft' })
     return c.json({ ok: true })
   })
 

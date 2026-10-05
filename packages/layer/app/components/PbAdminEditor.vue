@@ -15,6 +15,7 @@ const emit = defineEmits<{
     payload: { title: string; slug: string; summary: string; body: string; versionId: string | null; entityIds: string[] },
   ]
   cancel: []
+  delete: []
 }>()
 
 const title = ref('')
@@ -89,6 +90,15 @@ function toggleEntity(id: string) {
         >
           预览真实页面
         </a>
+        <button
+          v-if="initial"
+          class="pb-btn pb-btn--ghost"
+          type="button"
+          :disabled="busy"
+          @click="emit('delete')"
+        >
+          删除这篇
+        </button>
         <button class="pb-btn pb-btn--ghost" type="button" @click="emit('cancel')">返回列表</button>
       </div>
     </header>

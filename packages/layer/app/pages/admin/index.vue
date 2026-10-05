@@ -121,6 +121,20 @@ async function save(payload: Record<string, unknown>) {
   }
 }
 
+async function removeGuide() {
+  if (!editing.value) return
+  if (!confirm(`确定删除《${editing.value.title}》？这一步不可撤销。`)) return
+  busy.value = true
+  try {
+    await $fetch(apiUrl(`/api/admin/guides/${editing.value.id}`), { method: 'DELETE' })
+    editing.value = null
+    creating.value = false
+    await refresh()
+  } finally {
+    busy.value = false
+  }
+}
+
 async function changeStatus(status: 'draft' | 'published', payload: Record<string, unknown>) {
   busy.value = true
   error.value = ''
@@ -174,6 +188,7 @@ onMounted(boot)
         @save="save"
         @status="changeStatus"
         @cancel="((creating = false), (editing = null))"
+        @delete="removeGuide"
       />
 
       <template v-else>
