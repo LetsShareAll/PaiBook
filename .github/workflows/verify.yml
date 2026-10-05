@@ -11,9 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # 不写 version：让 action 读 package.json 的 packageManager，否则会因冲突直接失败
       - uses: pnpm/action-setup@v4
-        with:
-          version: 11
 
       - uses: actions/setup-node@v5
         with:
@@ -50,4 +49,4 @@ jobs:
 
       - name: 失败时输出站点日志
         if: failure()
-        run: tail -60 /tmp/dev-*.log
+        run: tail -60 /tmp/dev-*.log 2>/dev/null || true

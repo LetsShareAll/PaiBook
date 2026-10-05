@@ -32,25 +32,40 @@ jobs:
             package: "@paibook/portal"
             worker: paibook-portal
     steps:
+      - name: 检查部署凭据
+        id: guard
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::未配置 CLOUDFLARE_API_TOKEN，跳过部署。步骤见 docs/deploy.md"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@v5
+        if: steps.guard.outputs.ready == 'true'
 
       - uses: pnpm/action-setup@v4
+        if: steps.guard.outputs.ready == 'true'
         with:
           version: 11
 
       - uses: actions/setup-node@v5
+        if: steps.guard.outputs.ready == 'true'
         with:
           node-version: 26
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+        if: steps.guard.outputs.ready == 'true'
 
       - name: Build ${{ matrix.app }}
+        if: steps.guard.outputs.ready == 'true'
         run: pnpm --filter ${{ matrix.package }} build
         env:
           NODE_ENV: production
 
       - name: Deploy ${{ matrix.worker }}
+        if: steps.guard.outputs.ready == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
