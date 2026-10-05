@@ -5,7 +5,10 @@
 
    字体策略：走系统 CJK 字体栈（PingFang SC / 微软雅黑 / 宋体 等），
    不打包任何 webfont——游戏内字体不能用，而 CJK webfont 动辄数 MB，
-   对一个攻略站不值得。若将来要统一观感，再自托管 OFL 子集字体（思源黑体等）。 */
+   对一个攻略站不值得。若将来要统一观感，再自托管 OFL 子集字体（思源黑体等）。
+
+   构件语言差异：三站的结构差异全部由 token 表达——圆角、描边粗细、阴影类型、
+   背景层、卡片签名——组件本身不写死任何一站的外观。 */
 
 :root {
   --pb-font-sans: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
@@ -19,21 +22,29 @@
   --pb-space-5: 40px;
   --pb-space-6: 64px;
 
+  --pb-measure: 68ch;
+
+  /* 结构 token：各站覆盖 */
   --pb-radius-sm: 6px;
   --pb-radius-md: 10px;
-  --pb-edge: #e2d9c6;
-  --pb-line: 1px solid var(--pb-edge);
+  --pb-border-width: 1px;
+  --pb-panel-shadow: 0 1px 3px rgb(0 0 0 / 6%);
+  --pb-panel-glow: none;
+  --pb-bg-layers: none;
+  --pb-bg-size: auto;
+  --pb-display-weight: 700;
+  --pb-display-tracking: -0.01em;
 
+  /* 兜底（未设 data-site 时也要能看） */
   --pb-paper: #f7f2e7;
   --pb-surface: #fffdf8;
   --pb-surface-alt: #fbf7ee;
   --pb-ink: #3b3a36;
   --pb-muted: #8a8578;
+  --pb-edge: #e2d9c6;
   --pb-accent: #c8a86b;
   --pb-accent-ink: #453718;
   --pb-accent-soft: #ecdfc4;
-  --pb-shadow: 0 1px 3px rgb(0 0 0 / 6%);
-  --pb-measure: 68ch;
 }
 
 [data-site='genshin'] {
@@ -41,38 +52,61 @@
   --pb-surface: #fffdf8;
   --pb-surface-alt: #fbf7ee;
   --pb-ink: #3b3a36;
+  --pb-muted: #8a8578;
+  --pb-edge: #e2d9c6;
   --pb-accent: #c8a86b;
   --pb-accent-ink: #453718;
   --pb-accent-soft: #ecdfc4;
-  --pb-edge: #e2d9c6;
+  --pb-bg-layers:
+    radial-gradient(circle at 18% -5%, #fffdf8 0%, transparent 45%),
+    radial-gradient(circle at 88% 8%, #fbf3e2 0%, transparent 42%);
 }
 
 [data-site='honkaistarrail'] {
   --pb-font-display: 'Noto Sans SC', sans-serif;
-  --pb-paper: #0d1220;
-  --pb-surface: #151c2f;
-  --pb-surface-alt: #111726;
+  --pb-paper: #0b1020;
+  --pb-surface: #141b2e;
+  --pb-surface-alt: #101728;
   --pb-ink: #e9edf8;
   --pb-muted: #8f9ab8;
   --pb-edge: #26314b;
   --pb-accent: #8fb6ff;
-  --pb-accent-ink: #0d1220;
-  --pb-accent-soft: #1d2740;
-  --pb-shadow: 0 1px 3px rgb(0 0 0 / 40%);
+  --pb-accent-ink: #0b1020;
+  --pb-accent-soft: #1b2540;
+  --pb-radius-sm: 4px;
+  --pb-radius-md: 6px;
+  --pb-panel-shadow: 0 10px 26px rgb(0 0 0 / 35%);
+  --pb-panel-glow: inset 0 0 0 1px rgb(143 182 255 / 14%);
+  --pb-display-tracking: 0.01em;
+  /* 逐层指定 size：星星平铺，星云铺满，否则星云会跟着平铺出矩形色块 */
+  --pb-bg-size: 220px 220px, 220px 220px, 220px 220px, 220px 220px, 100% 100%, 100% 100%;
+  --pb-bg-layers:
+    radial-gradient(1.4px 1.4px at 24% 32%, rgb(255 255 255 / 78%) 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 62%, rgb(255 255 255 / 60%) 50%, transparent 51%),
+    radial-gradient(1px 1px at 44% 84%, rgb(255 255 255 / 45%) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 84% 18%, rgb(255 255 255 / 55%) 50%, transparent 51%),
+    radial-gradient(circle at 12% -12%, #1d2a4d 0%, transparent 55%),
+    radial-gradient(circle at 92% -6%, #17223c 0%, transparent 48%);
 }
 
 [data-site='zenlesszonezero'] {
   --pb-font-display: 'Noto Sans SC', sans-serif;
-  --pb-paper: #101010;
-  --pb-surface: #171717;
-  --pb-surface-alt: #131313;
-  --pb-ink: #f2f2f2;
-  --pb-muted: #9a9a9a;
-  --pb-edge: #2a2a2a;
+  --pb-paper: #0d0d0d;
+  --pb-surface: #151515;
+  --pb-surface-alt: #111111;
+  --pb-ink: #f4f4f4;
+  --pb-muted: #949494;
+  --pb-edge: #2b2b2b;
   --pb-accent: #eaff3d;
-  --pb-accent-ink: #101010;
-  --pb-accent-soft: #232600;
-  --pb-shadow: 0 1px 3px rgb(0 0 0 / 50%);
+  --pb-accent-ink: #0a0a0a;
+  --pb-accent-soft: #23260a;
+  --pb-radius-sm: 0px;
+  --pb-radius-md: 2px;
+  --pb-border-width: 2px;
+  --pb-panel-shadow: 5px 5px 0 rgb(234 255 61 / 16%);
+  --pb-display-weight: 800;
+  --pb-display-tracking: -0.02em;
+  --pb-bg-layers: repeating-linear-gradient(0deg, rgb(255 255 255 / 2.5%) 0 1px, transparent 1px 4px);
 }
 
 [data-site='portal'] {
@@ -104,6 +138,9 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  background-image: var(--pb-bg-layers);
+  background-size: var(--pb-bg-size);
+  background-attachment: fixed;
 }
 
 .pb-shell {
@@ -117,8 +154,8 @@ body {
 .pb-title {
   font-family: var(--pb-font-display);
   font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-weight: var(--pb-display-weight);
+  letter-spacing: var(--pb-display-tracking);
   margin: 0 0 var(--pb-space-2);
 }
 
@@ -129,7 +166,7 @@ body {
 .pb-badge {
   display: inline-block;
   padding: 1px 8px;
-  border: 1px solid var(--pb-accent);
+  border: var(--pb-border-width) solid var(--pb-accent);
   border-radius: 999px;
   color: var(--pb-accent-ink);
   background: var(--pb-accent-soft);
@@ -139,6 +176,12 @@ body {
   white-space: nowrap;
 }
 
+[data-site='zenlesszonezero'] .pb-badge {
+  border-radius: 0;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
 .pb-dot {
   color: var(--pb-accent);
   font-size: 9px;
@@ -146,13 +189,13 @@ body {
   vertical-align: 1px;
 }
 
-/* 面板：双层描边 + 角标，复刻游戏内面板的"构件语言"（自绘，非官方素材） */
+/* 面板：双层描边的"构件语言"，各站用 token 调形 */
 .pb-panel {
   position: relative;
   background: var(--pb-surface);
-  border: 1px solid var(--pb-edge);
+  border: var(--pb-border-width) solid var(--pb-edge);
   border-radius: var(--pb-radius-md);
-  box-shadow: var(--pb-shadow);
+  box-shadow: var(--pb-panel-shadow), var(--pb-panel-glow);
 }
 
 .pb-panel::before {
@@ -162,4 +205,73 @@ body {
   border: 1px solid var(--pb-accent-soft);
   border-radius: calc(var(--pb-radius-md) - 3px);
   pointer-events: none;
+}
+
+[data-site='zenlesszonezero'] .pb-panel::before {
+  border-color: rgb(255 255 255 / 8%);
+}
+
+/* ---- 每站的卡片签名（自绘纹样，组件本身不知道这些） ---- */
+
+/* 原神：顶边中央一枚菱形书签 */
+[data-site='genshin'] .pb-card::after {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--pb-border-width));
+  left: 50%;
+  translate: -50% 0;
+  width: 34px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--pb-accent);
+}
+
+/* 星铁：左上与右下的 L 形定位角（HUD 语汇） */
+[data-site='honkaistarrail'] .pb-card {
+  overflow: hidden;
+}
+
+[data-site='honkaistarrail'] .pb-card::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--pb-accent), var(--pb-accent)),
+    linear-gradient(var(--pb-accent), var(--pb-accent)),
+    linear-gradient(var(--pb-accent), var(--pb-accent)),
+    linear-gradient(var(--pb-accent), var(--pb-accent));
+  background-repeat: no-repeat;
+  background-size: 16px 2px, 2px 16px, 16px 2px, 2px 16px;
+  background-position: left top, left top, right bottom, right bottom;
+  opacity: 0.55;
+}
+
+/* 绝区零：右上角警示斜纹 + 硬阴影 */
+[data-site='zenlesszonezero'] .pb-card {
+  overflow: hidden;
+}
+
+[data-site='zenlesszonezero'] .pb-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 84px;
+  height: 10px;
+  background-image: repeating-linear-gradient(-45deg, var(--pb-accent) 0 4px, transparent 4px 8px);
+  opacity: 0.85;
+}
+
+/* ---- 页脚：三站不同的边线语汇 ---- */
+.pb-footer {
+  border-top: var(--pb-border-width) solid var(--pb-edge);
+  background: var(--pb-surface-alt);
+}
+
+[data-site='zenlesszonezero'] .pb-footer {
+  border-top: none;
+  background-image: repeating-linear-gradient(-45deg, var(--pb-accent) 0 6px, transparent 6px 14px);
+  background-repeat: no-repeat;
+  background-size: 100% 4px;
 }
