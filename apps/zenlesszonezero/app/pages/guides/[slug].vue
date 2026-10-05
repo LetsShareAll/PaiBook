@@ -8,10 +8,7 @@ if (!guide.value) {
   throw createError({ statusCode: 404, message: '这篇攻略不存在', fatal: true })
 }
 
-useHead({
-  title: `${guide.value.title} · PaiBook`,
-  meta: [{ name: 'description', content: guide.value.summary }],
-})
+useGuideSeo(guide.value)
 </script>
 
 <template>

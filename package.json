@@ -14,6 +14,10 @@
     "build": "pnpm -r --filter \"./apps/*\" build",
     "typecheck": "pnpm -r --filter \"./apps/*\" typecheck",
     "db:local": "bash scripts/local-db.sh",
-    "reindex:local": "node scripts/reindex-local.mjs"
+    "reindex:local": "node scripts/reindex-local.mjs",
+    "og:build": "node scripts/build-og-images.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
   }
 }

@@ -5,6 +5,8 @@ const [{ data: list }, { data: links }] = await Promise.all([
   useFetch<GuideList>(apiUrl('/api/guides')),
   useFetch<{ items: GuideLink[] }>(apiUrl('/api/links')),
 ])
+
+useSiteSeo()
 </script>
 
 <template>

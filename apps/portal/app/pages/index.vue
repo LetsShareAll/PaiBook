@@ -15,6 +15,8 @@ const [{ data: games }, { data: recent }] = await Promise.all([
 ])
 
 const titleOf = (id: string) => games.value?.items.find((game) => game.id === id)?.titleZh ?? id
+
+useSiteSeo()
 </script>
 
 <template>

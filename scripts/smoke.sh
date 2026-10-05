@@ -35,6 +35,7 @@ check_game() {
   check "$label 攻略接口" "$root$prefix/api/guides" 200 "\"items\""
   check "$label 实体接口" "$root$prefix/api/entities" 200 "\"items\""
   check "$label 搜索" "$root$prefix/api/search?q=%E7%A4%BA%E4%BE%8B" 200
+  check "$label 分享卡片图" "$root$prefix/og.png" 200
   check "$label 后台接口上锁" "$root$prefix/api/admin/guides" 401
   check "$label 后台内容上锁" "$root$prefix/api/admin/links" 401
   check "$label 后台页面" "$root$prefix/admin" 200
@@ -48,6 +49,7 @@ check_portal() {
   check "门厅 sitemap" "$root/sitemap.xml" 200 "genshin/"
   check "门厅 游戏清单" "$root/api/games" 200 "\"items\""
   check "门厅 跨游戏搜索" "$root/api/search?q=%E7%A4%BA%E4%BE%8B" 200
+  check "门厅 分享卡片图" "$root/og.png" 200
 }
 
 if [ -z "$BASE" ]; then
