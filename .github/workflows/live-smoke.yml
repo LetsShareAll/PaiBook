@@ -10,6 +10,11 @@ on:
         description: 要检查的站点根地址
         required: false
         default: https://paibook.lssa.fun
+      check_purge:
+        description: 是否额外验证"发布即生效"（需要仓库 secret ADMIN_PASSWORD）
+        type: boolean
+        required: false
+        default: false
   schedule:
     - cron: '20 1 * * *' # UTC 01:20 = 北京时间 09:20
 
@@ -21,3 +26,14 @@ jobs:
 
       - name: 冒烟检查线上地址
         run: bash scripts/smoke.sh "${{ github.event.inputs.base || 'https://paibook.lssa.fun' }}"
+
+      # 手动勾选时才跑：它会在线上建一篇临时攻略、发布、再删掉。
+      - name: 验证「发布即生效」（边缘缓存 purge）
+        if: ${{ github.event.inputs.check_purge == 'true' && secrets.ADMIN_PASSWORD != '' }}
+        env:
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: bash scripts/verify-purge-live.sh
+
+      - name: 未配置 ADMIN_PASSWORD 的提示
+        if: ${{ github.event.inputs.check_purge == 'true' && secrets.ADMIN_PASSWORD == '' }}
+        run: echo "::notice::勾选了 purge 验证，但仓库没有 ADMIN_PASSWORD secret，已跳过"
