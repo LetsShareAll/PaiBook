@@ -67,7 +67,11 @@ const login = await fetch(`${base}/api/admin/login`, {
   headers: { 'content-type': 'application/json' },
   body: JSON.stringify({ password }),
 })
-check('正确密码拿到会话 cookie', login.status === 200 && login.headers.getSetCookie().length > 0)
+check(
+  '正确密码拿到会话 cookie',
+  login.status === 200 && login.headers.getSetCookie().length > 0,
+  login.status === 401 ? '密码不匹配——检查 ADMIN_PASSWORD 配置（本地 .dev.vars / CI 环境变量）' : `status=${login.status}`,
+)
 cookie = login.headers
   .getSetCookie()
   .map((item) => item.split(';')[0])

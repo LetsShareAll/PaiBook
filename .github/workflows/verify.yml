@@ -26,6 +26,13 @@ jobs:
       - name: 初始化四个应用的本地数据库
         run: bash scripts/local-db.sh
 
+      # .dev.vars 被 git 忽略（它是密钥），所以 CI 要自己准备一份；必须在起服务之前写。
+      - name: 写入 CI 专用的本地密钥
+        run: |
+          for app in genshin honkaistarrail zenlesszonezero portal; do
+            printf 'ADMIN_PASSWORD=ci-password\nSESSION_SECRET=ci-session-secret\n' > "apps/$app/.dev.vars"
+          done
+
       - name: 启动四个站
         run: |
           for pair in genshin:4123 honkaistarrail:4124 zenlesszonezero:4125 portal:4126; do
@@ -46,6 +53,8 @@ jobs:
 
       - name: 核心不变量回归测试
         run: node scripts/test-invariants.mjs
+        env:
+          ADMIN_PASSWORD: ci-password
 
       - name: 失败时输出站点日志
         if: failure()
