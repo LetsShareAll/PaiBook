@@ -21,8 +21,8 @@ const creating = ref(false)
 
 async function refresh() {
   const [guides, tax] = await Promise.all([
-    $fetch<AdminGuideList>('/api/admin/guides'),
-    $fetch<Taxonomy>('/api/admin/taxonomy'),
+    $fetch<AdminGuideList>(apiUrl('/api/admin/guides')),
+    $fetch<Taxonomy>(apiUrl('/api/admin/taxonomy')),
   ])
   list.value = guides.items
   taxonomy.value = tax
@@ -30,7 +30,7 @@ async function refresh() {
 
 async function boot() {
   try {
-    await $fetch('/api/admin/session')
+    await $fetch(apiUrl('/api/admin/session'))
     authed.value = true
     await refresh()
   } catch {
@@ -43,7 +43,7 @@ async function boot() {
 async function login() {
   error.value = ''
   try {
-    await $fetch('/api/admin/login', { method: 'POST', body: { password: password.value } })
+    await $fetch(apiUrl('/api/admin/login'), { method: 'POST', body: { password: password.value } })
     password.value = ''
     authed.value = true
     await refresh()
@@ -53,7 +53,7 @@ async function login() {
 }
 
 async function logout() {
-  await $fetch('/api/admin/logout', { method: 'POST' })
+  await $fetch(apiUrl('/api/admin/logout'), { method: 'POST' })
   authed.value = false
   list.value = []
   editing.value = null
@@ -66,7 +66,7 @@ function startCreate() {
 
 async function open(id: string) {
   creating.value = false
-  editing.value = await $fetch<AdminGuideDetail>(`/api/admin/guides/${id}`)
+  editing.value = await $fetch<AdminGuideDetail>(apiUrl(`/api/admin/guides/${id}`))
 }
 
 async function save(payload: Record<string, unknown>) {
@@ -74,14 +74,14 @@ async function save(payload: Record<string, unknown>) {
   error.value = ''
   try {
     if (editing.value) {
-      await $fetch(`/api/admin/guides/${editing.value.id}`, { method: 'PUT', body: payload })
+      await $fetch(apiUrl(`/api/admin/guides/${editing.value.id}`), { method: 'PUT', body: payload })
     } else {
-      const created = await $fetch<{ id: string }>('/api/admin/guides', { method: 'POST', body: payload })
+      const created = await $fetch<{ id: string }>(apiUrl('/api/admin/guides'), { method: 'POST', body: payload })
       creating.value = false
-      editing.value = await $fetch<AdminGuideDetail>(`/api/admin/guides/${created.id}`)
+      editing.value = await $fetch<AdminGuideDetail>(apiUrl(`/api/admin/guides/${created.id}`))
     }
     await refresh()
-    if (editing.value) editing.value = await $fetch<AdminGuideDetail>(`/api/admin/guides/${editing.value.id}`)
+    if (editing.value) editing.value = await $fetch<AdminGuideDetail>(apiUrl(`/api/admin/guides/${editing.value.id}`))
   } catch (cause) {
     error.value = '保存失败：slug 可能已存在，或字段不合法。'
     console.error(cause)
@@ -96,14 +96,14 @@ async function changeStatus(status: 'draft' | 'published', payload: Record<strin
   try {
     let id = editing.value?.id
     if (id) {
-      await $fetch(`/api/admin/guides/${id}`, { method: 'PUT', body: payload })
+      await $fetch(apiUrl(`/api/admin/guides/${id}`), { method: 'PUT', body: payload })
     } else {
-      const created = await $fetch<{ id: string }>('/api/admin/guides', { method: 'POST', body: payload })
+      const created = await $fetch<{ id: string }>(apiUrl('/api/admin/guides'), { method: 'POST', body: payload })
       id = created.id
       creating.value = false
     }
-    await $fetch(`/api/admin/guides/${id}/status`, { method: 'POST', body: { status } })
-    editing.value = await $fetch<AdminGuideDetail>(`/api/admin/guides/${id}`)
+    await $fetch(apiUrl(`/api/admin/guides/${id}/status`), { method: 'POST', body: { status } })
+    editing.value = await $fetch<AdminGuideDetail>(apiUrl(`/api/admin/guides/${id}`))
     await refresh()
   } catch (cause) {
     error.value = '发布失败：slug 可能已存在，或字段不合法。'

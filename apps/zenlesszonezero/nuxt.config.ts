@@ -12,6 +12,7 @@ export default defineNuxtConfig({
       }
     : {},
   app: {
+    baseURL: '/zenlesszonezero/',
     head: {
       htmlAttrs: { 'data-site': 'zenlesszonezero' },
       title: 'PaiBook · 绝区零',

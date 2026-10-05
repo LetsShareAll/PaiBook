@@ -4,7 +4,7 @@ import type { GuideSummary } from '@paibook/contracts'
 const route = useRoute()
 const query = computed(() => String(route.query.q ?? '').trim())
 
-const { data } = await useFetch<{ items: GuideSummary[]; total: number }>('/api/search', {
+const { data } = await useFetch<{ items: GuideSummary[]; total: number }>(apiUrl('/api/search'), {
   query: { q: query },
 })
 
@@ -15,7 +15,7 @@ useHead({ title: '搜索 · PaiBook' })
   <main class="pb-shell">
     <h1 class="pb-title">搜索</h1>
 
-    <form class="form" action="/search" method="get">
+    <form class="form" :action="apiUrl('/search')" method="get">
       <input class="form__input" type="search" name="q" :value="query" placeholder="输入角色名、玩法或关键词" />
       <button class="pb-btn pb-btn--primary" type="submit">搜索</button>
     </form>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { GuideList } from '@paibook/contracts'
 
-const { data: list } = await useFetch<GuideList>('/api/guides')
+const { data: list } = await useFetch<GuideList>(apiUrl('/api/guides'))
 </script>
 
 <template>

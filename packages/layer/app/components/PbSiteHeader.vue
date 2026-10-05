@@ -19,7 +19,7 @@ defineProps<{
         <span class="pb-header__title">{{ title }}</span>
       </NuxtLink>
       <p class="pb-header__tagline">{{ tagline }}</p>
-      <form class="pb-header__search" action="/search" method="get">
+      <form class="pb-header__search" :action="apiUrl('/search')" method="get">
         <input
           class="pb-header__input"
           type="search"

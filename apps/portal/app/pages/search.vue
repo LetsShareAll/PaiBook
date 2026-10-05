@@ -18,7 +18,7 @@ useHead({ title: '搜索 · PaiBook' })
   <main class="pb-shell">
     <h1 class="pb-title">全站搜索</h1>
 
-    <form class="form" action="/search" method="get">
+    <form class="form" :action="apiUrl('/search')" method="get">
       <input class="form__input" type="search" name="q" :value="query" placeholder="在三款游戏里搜索攻略" />
       <button class="pb-btn pb-btn--primary" type="submit">搜索</button>
     </form>

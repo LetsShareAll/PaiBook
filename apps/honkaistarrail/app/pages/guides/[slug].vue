@@ -2,7 +2,7 @@
 import type { GuideDetail } from '@paibook/contracts'
 
 const route = useRoute()
-const { data: guide } = await useFetch<GuideDetail>(`/api/guides/${route.params.slug}`)
+const { data: guide } = await useFetch<GuideDetail>(apiUrl(`/api/guides/${route.params.slug}`))
 
 if (!guide.value) {
   throw createError({ statusCode: 404, message: '这篇攻略不存在', fatal: true })

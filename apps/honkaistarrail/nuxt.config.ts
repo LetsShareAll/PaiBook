@@ -12,6 +12,7 @@ export default defineNuxtConfig({
       }
     : {},
   app: {
+    baseURL: '/honkaistarrail/',
     head: {
       htmlAttrs: { 'data-site': 'honkaistarrail' },
       title: 'PaiBook · 崩坏：星穹铁道',
