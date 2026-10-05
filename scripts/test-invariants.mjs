@@ -189,7 +189,31 @@ badForm.append('file', new Blob(['not an image'], { type: 'text/plain' }), 'x.tx
 const badUpload = await call('/api/admin/uploads', { method: 'POST', body: badForm })
 check('非图片类型被拒绝（415）', badUpload.status === 415, `status=${badUpload.status}`)
 
-// --- 7. 清理：删掉测试条目后，前台与搜索都应干净 ---
+// --- 7. 内容导出 / 导入往返 ---
+const exported = await (await call('/api/admin/export')).json()
+check('导出包含刚发布的条目', exported.schema === 1 && exported.guides.some((item) => item.slug === slug))
+
+const modified = structuredClone(exported)
+const target = modified.guides.find((item) => item.slug === slug)
+target.title = `${target.title}（导入改写）`
+const importRound = await call('/api/admin/import', { method: 'POST', body: JSON.stringify(modified) })
+check('导入返回统计', importRound.status === 200, `status=${importRound.status}`)
+
+const afterImport = await (await fetch(`${base}/api/guides`)).json()
+check(
+  '导入改写在前台生效',
+  Boolean(afterImport.items.find((item) => item.slug === slug)?.title.includes('导入改写')),
+)
+const reindexed = await (await fetch(`${base}/api/search?q=${encodeURIComponent('导入改写')}`)).json()
+check('导入后搜索索引同步更新', reindexed.items.some((item) => item.slug === slug), `total=${reindexed.total}`)
+
+const wrongGame = await call('/api/admin/import', {
+  method: 'POST',
+  body: JSON.stringify({ ...exported, gameId: 'honkaistarrail' }),
+})
+check('跨游戏导入被拒绝（400）', wrongGame.status === 400, `status=${wrongGame.status}`)
+
+// --- 8. 清理：删掉测试条目后，前台与搜索都应干净 ---
 for (const id of created.guides) {
   await call(`/api/admin/guides/${id}`, { method: 'DELETE' })
 }

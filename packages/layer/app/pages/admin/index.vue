@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { AdminGuideDetail, AdminGuideItem, AdminGuideList, GuideLink, Taxonomy } from '@paibook/contracts'
+import type { AdminGuideDetail, AdminGuideItem, AdminGuideList, ContentExport, GuideLink, Taxonomy } from '@paibook/contracts'
 
 definePageMeta({ ssr: false })
 
@@ -20,6 +20,7 @@ const editing = ref<AdminGuideDetail | null>(null)
 const creating = ref(false)
 const links = ref<GuideLink[]>([])
 const linkForm = ref({ title: '', url: '', summary: '', sourceName: '', author: '' })
+const message = ref('')
 
 async function addLink() {
   busy.value = true
@@ -121,6 +122,44 @@ async function save(payload: Record<string, unknown>) {
   }
 }
 
+async function exportAll() {
+  busy.value = true
+  try {
+    const data = await $fetch<ContentExport>(apiUrl('/api/admin/export'))
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = `paibook-${data.gameId}-${data.exportedAt.slice(0, 10)}.json`
+    anchor.click()
+    URL.revokeObjectURL(url)
+    message.value = `已导出 ${data.guides.length} 篇攻略、${data.links.length} 条外链、${data.entities.length} 个实体。`
+  } finally {
+    busy.value = false
+  }
+}
+
+async function importAll(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  busy.value = true
+  try {
+    const result = await $fetch<{ guides: number; links: number; entities: number; versions: number }>(
+      apiUrl('/api/admin/import'),
+      { method: 'POST', body: JSON.parse(await file.text()) },
+    )
+    message.value = `导入完成：攻略 ${result.guides} 篇、外链 ${result.links} 条、实体 ${result.entities} 个、版本 ${result.versions} 个。`
+    await refresh()
+  } catch {
+    message.value = '导入失败：文件不是本站导出的 JSON，或者是另一个游戏的内容。'
+  } finally {
+    busy.value = false
+    input.value = ''
+  }
+}
+
 async function removeGuide() {
   if (!editing.value) return
   if (!confirm(`确定删除《${editing.value.title}》？这一步不可撤销。`)) return
@@ -209,6 +248,22 @@ onMounted(boot)
             </button>
           </li>
         </ul>
+
+        <section class="migrate pb-panel">
+          <h2 class="migrate__title">内容迁移</h2>
+          <p class="pb-muted migrate__hint">
+            导出的是本站全部内容（攻略正文、实体、版本、外链）的 JSON。它既是备份，也是换库/迁移时的入口；
+            导入按 id 覆盖，不会清空你没在文件里的东西。
+          </p>
+          <div class="migrate__actions">
+            <button class="pb-btn" type="button" :disabled="busy" @click="exportAll">导出全部内容</button>
+            <label class="pb-btn upload-btn">
+              导入 JSON
+              <input type="file" accept="application/json" @change="importAll" />
+            </label>
+          </div>
+          <p v-if="message" class="pb-muted migrate__message">{{ message }}</p>
+        </section>
 
         <PbAdminTaxonomy @changed="refresh" />
 
@@ -312,6 +367,29 @@ onMounted(boot)
 .err {
   color: #b4544a;
   font-size: 13px;
+}
+.migrate {
+  padding: var(--pb-space-3);
+  margin-bottom: var(--pb-space-4);
+}
+.migrate__title {
+  font-family: var(--pb-font-display);
+  font-size: 16px;
+  margin: 0 0 var(--pb-space-1);
+}
+.migrate__hint {
+  margin: 0 0 var(--pb-space-3);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.migrate__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pb-space-2);
+}
+.migrate__message {
+  margin: var(--pb-space-2) 0 0;
+  font-size: 12px;
 }
 .admin-links {
   margin-top: var(--pb-space-5);

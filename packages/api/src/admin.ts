@@ -1,11 +1,13 @@
 import { Hono } from 'hono'
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
 import { createMiddleware } from 'hono/factory'
-import { entityWriteSchema, guideWriteSchema, linkWriteSchema, loginSchema, versionWriteSchema } from '@paibook/contracts'
+import { contentExportSchema, entityWriteSchema, guideWriteSchema, linkWriteSchema, loginSchema, versionWriteSchema } from '@paibook/contracts'
 import {
   createEntity,
   createGuide,
   deleteGuide,
+  exportContent,
+  importContent,
   createVersion,
   deleteEntity,
   deleteVersion,
@@ -107,6 +109,25 @@ export function createAdminApp(ctx: ApiContext) {
 
   /** 重建本站搜索索引（首次建表或改了分词规则时用）。 */
   app.post('/reindex', async (c) => c.json({ count: await reindexGuideSearch(ctx.db, ctx.game) }))
+
+  /** 内容整体导出：作者对自己写的东西要有一条掌控得住的后路。 */
+  app.get('/export', async (c) => {
+    const payload = await exportContent(ctx.db, ctx.game)
+    c.header('content-disposition', `attachment; filename="paibook-${ctx.game}-${payload.exportedAt.slice(0, 10)}.json"`)
+    return c.json(payload)
+  })
+
+  app.post('/import', async (c) => {
+    const parsed = contentExportSchema.safeParse(await c.req.json().catch(() => null))
+    if (!parsed.success) return c.json({ error: 'invalid_payload', issues: parsed.error.issues.slice(0, 5) }, 400)
+    if (parsed.data.gameId !== ctx.game) {
+      return c.json({ error: 'game_mismatch', expected: ctx.game, got: parsed.data.gameId }, 400)
+    }
+
+    const summary = await importContent(ctx.db, parsed.data)
+    await ctx.onContentChanged?.({ slug: '', status: 'published' })
+    return c.json(summary)
+  })
 
   app.get('/links', async (c) => c.json({ items: await listLinks(ctx.db, ctx.game) }))
 
