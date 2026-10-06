@@ -5,6 +5,12 @@ defineProps<{
 }>()
 
 const year = new Date().getFullYear()
+
+/** 站点标识：由挂载前缀推导（/genshin/ → genshin），门厅没有前缀。 */
+const site = computed(() => {
+  const base = String(useRuntimeConfig().app.baseURL ?? '/').replaceAll('/', '')
+  return base || 'portal'
+})
 </script>
 
 <template>
@@ -19,6 +25,14 @@ const year = new Date().getFullYear()
       <p class="pb-footer__note">
         本站完全免费：没有广告、没有打赏、没有会员。内容以 CC BY-NC-SA 4.0 授权。
       </p>
+      <!-- 长页面滚到底时页头已经在屏幕外，所以这里再给一次出路。
+           跨 Worker 的链接（门厅）必须是普通 <a>，NuxtLink 会走本应用的路由。 -->
+      <nav class="pb-footer__nav">
+        <a v-if="site !== 'portal'" class="pb-footer__link" href="/">门厅</a>
+        <NuxtLink class="pb-footer__link" to="/codex">图鉴</NuxtLink>
+        <NuxtLink class="pb-footer__link" to="/search">搜索</NuxtLink>
+        <NuxtLink class="pb-footer__link" to="/profile">我的档案</NuxtLink>
+      </nav>
       <p class="pb-footer__meta">© {{ year }} PaiBook · 派书</p>
     </div>
   </footer>
@@ -41,6 +55,20 @@ const year = new Date().getFullYear()
   color: var(--pb-muted);
   font-size: 12px;
   line-height: 1.8;
+}
+.pb-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pb-space-3);
+  margin: 0 0 var(--pb-space-3);
+}
+.pb-footer__link {
+  color: var(--pb-muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+.pb-footer__link:hover {
+  color: var(--pb-accent-foreground);
 }
 .pb-footer__meta {
   margin-bottom: 0;

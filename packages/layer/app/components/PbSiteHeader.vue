@@ -49,6 +49,12 @@ const site = computed(() => {
       <p class="pb-header__tagline">{{ tagline }}</p>
 
       <div class="pb-header__nav">
+        <!-- 跨 Worker 的链接必须用普通 <a>：NuxtLink 会走本应用的路由，而门厅是另一个 Worker。
+             站点挂在 /genshin 这类前缀下，所以 href="/" 正好回到门厅。 -->
+        <template v-if="site !== 'portal'">
+          <a class="pb-header__navlink" href="/">门厅</a>
+          <span class="pb-header__sep" aria-hidden="true">·</span>
+        </template>
         <NuxtLink class="pb-header__navlink" to="/codex">图鉴</NuxtLink>
         <span class="pb-header__sep" aria-hidden="true">·</span>
         <NuxtLink class="pb-header__navlink" to="/profile">我的档案</NuxtLink>
