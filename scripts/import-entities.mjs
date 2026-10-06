@@ -164,7 +164,7 @@ function disambiguate(list) {
 const LOCAL_APPS = ['genshin', 'honkaistarrail', 'zenlesszonezero', 'portal']
 
 function applySqlTo(app, file, label) {
-  execFileSync('npx', ['wrangler', 'd1', 'execute', 'paibook', target, '--file', file], {
+  execFileSync('npx', ['wrangler', 'd1', 'execute', 'paibook', target, '--yes', '--file', file], {
     cwd: join(root, 'apps', app),
     stdio: ['ignore', 'ignore', 'inherit'],
   })
