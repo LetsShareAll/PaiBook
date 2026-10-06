@@ -1,19 +1,24 @@
 /* PaiBook 设计 token：三站共用同一套结构，各站只换值。
    [data-site] 由各应用的 app.head.htmlAttrs 设置。
 
-   资产红线（ADR-0007）：所有纹样自绘，不使用官方素材与游戏内字体。
+   资产红线（ADR-0007）：所有纹样自绘；但防线是"不临摹 + 从设计语言重建"，
+   不是"自绘"本身——自绘一张和官方界面一模一样的图依然是描改。
+   判据：与官方页面并排，玩家说"这是同一个应用"就越线。
+   各站取值的推导依据记在 docs/design/design-tokens.md。
 
    字体策略：走系统 CJK 字体栈（PingFang SC / 微软雅黑 / 宋体 等），
-   不打包任何 webfont——游戏内字体不能用，而 CJK webfont 动辄数 MB，
-   对一个攻略站不值得。若将来要统一观感，再自托管 OFL 子集字体（思源黑体等）。
+   不打包任何 webfont——游戏内字体不能用（三家全是商业字库），而 CJK
+   webfont 动辄数 MB，对一个攻略站不值得。token 里不写既不打包、也不在
+   系统栈里的字体名，那只会留下"看起来配好、其实没生效"的假象。
+   若将来要统一观感，再自托管 OFL 子集字体（思源黑体等）。
 
-   构件语言差异：三站的结构差异全部由 token 表达——圆角、描边粗细、阴影类型、
+   设计语言差异：三站的结构差异全部由 token 表达——圆角、描边粗细、阴影类型、
    背景层、卡片签名——组件本身不写死任何一站的外观。 */
 
 :root {
-  --pb-font-sans: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
-  --pb-font-display: 'Noto Serif SC', 'Songti SC', 'SimSun', var(--pb-font-sans);
-  --pb-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --pb-font-sans: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+  --pb-font-display: 'Songti SC', 'SimSun', var(--pb-font-sans);
+  --pb-font-mono: ui-monospace, Menlo, Consolas, monospace;
 
   --pb-space-1: 4px;
   --pb-space-2: 8px;
@@ -63,7 +68,7 @@
 }
 
 [data-site='honkaistarrail'] {
-  --pb-font-display: 'Noto Sans SC', sans-serif;
+  --pb-font-display: var(--pb-font-sans);
   --pb-paper: #0b1020;
   --pb-surface: #141b2e;
   --pb-surface-alt: #101728;
@@ -90,7 +95,7 @@
 }
 
 [data-site='zenlesszonezero'] {
-  --pb-font-display: 'Noto Sans SC', sans-serif;
+  --pb-font-display: var(--pb-font-sans);
   --pb-paper: #0d0d0d;
   --pb-surface: #151515;
   --pb-surface-alt: #111111;
@@ -189,7 +194,7 @@ body {
   vertical-align: 1px;
 }
 
-/* 面板：双层描边的"构件语言"，各站用 token 调形 */
+/* 面板：双层描边的构件写法，各站用 token 调形 */
 .pb-panel {
   position: relative;
   background: var(--pb-surface);
