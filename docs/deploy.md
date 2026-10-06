@@ -63,6 +63,18 @@ npx wrangler d1 execute paibook --remote --file=../../packages/db/migrations/000
 `game` / `version` / `entity` 的基础行现在可以在写作台的「分类维护」里加，不必再写 SQL；
 `packages/db/seed/dev.sql` 是本地示例数据，线上不要用。
 
+## 2.5 换过 database_id 之后，本地库要重建一次
+
+miniflare 是按 database id 索引本地存储的：把 `wrangler.jsonc` 里的占位 id 换成真实 id 之后，
+本地那份数据相当于"另起了一份空的"，表现是本地站点报 `no such table`。重建即可：
+
+```bash
+bash scripts/local-db.sh          # 建表 + 示例数据 + 搜索索引
+node scripts/import-entities.mjs --local
+```
+
+线上不受影响（线上读的是远端 D1）。
+
 ## 3. 部署
 
 ```bash

@@ -21,6 +21,7 @@
     "check:contrast": "node scripts/check-contrast.mjs"
   },
   "devDependencies": {
+    "genshin-db": "^5.2.14",
     "playwright": "^1.63.0"
   }
 }

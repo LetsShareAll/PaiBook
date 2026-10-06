@@ -42,6 +42,7 @@ pnpm dev:genshin       # 或 dev:honkaistarrail / dev:zenlesszonezero / dev:port
 
 ```bash
 pnpm test:invariants   # 20 项核心不变量（草稿隔离 / 发布可见 / 上锁 / 中文分词 / 实体）
+node scripts/import-entities.mjs --remote   # 载入角色名单（原神/星铁，事实性元数据）
 bash scripts/smoke.sh  # 36 项线上冒烟（四站存活、接口、上锁、robots、sitemap、分享卡片）
 pnpm preflight         # 上线前体检：还差什么，每条附修复命令
 ```
