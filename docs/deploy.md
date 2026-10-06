@@ -53,6 +53,10 @@ done
 
 ## 2. 数据库初始化（远端）
 
+**只在第一次要手工跑**。之后每次 push 到 `main`，deploy 工作流会先把 `packages/db/migrations/*.sql` 全量跑一遍再部署（已经应用过的会跳过）；任何一条迁移报出"已存在"以外的错误，都会拦住这次部署——宁可不发，也不要让代码和库对不上。
+
+手工那一次：
+
 ```bash
 cd apps/genshin
 npx wrangler d1 execute paibook --remote --file=../../packages/db/migrations/0000_hesitant_rhodey.sql

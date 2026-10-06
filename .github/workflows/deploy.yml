@@ -10,7 +10,64 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # 迁移必须先于部署：代码会引用新列，迁移没跑完就发上去，线上接口直接 500。
+  # 已经跑过的迁移会报"已存在 / 列重复"，那是正常的；其它任何错误一律让 job 失败——
+  # 宁可拦住部署，也不要让代码和库对不上。
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: 检查部署凭据
+        id: guard
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::未配置 CLOUDFLARE_API_TOKEN，跳过迁移。步骤见 docs/deploy.md"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v5
+        if: steps.guard.outputs.ready == 'true'
+
+      - uses: pnpm/action-setup@v4
+        if: steps.guard.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v5
+        if: steps.guard.outputs.ready == 'true'
+        with:
+          node-version: 26
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+        if: steps.guard.outputs.ready == 'true'
+
+      - name: 应用数据库迁移（远端）
+        if: steps.guard.outputs.ready == 'true'
+        working-directory: apps/genshin
+        run: |
+          set -uo pipefail
+          fail=0
+          for file in ../../packages/db/migrations/*.sql; do
+            name=$(basename "$file")
+            out=$(npx wrangler d1 execute paibook --remote --yes --file="$file" 2>&1) || true
+            case "$out" in
+              *"already exists"*|*"duplicate column name"*)
+                echo "${name}：已应用过" ;;
+              *'"success": true'*)
+                echo "${name}：已应用" ;;
+              *)
+                echo "::error::${name} 迁移失败"
+                echo "$out" | tail -20
+                fail=1 ;;
+            esac
+          done
+          exit $fail
+
   deploy:
+    needs: migrate
     runs-on: ubuntu-latest
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
