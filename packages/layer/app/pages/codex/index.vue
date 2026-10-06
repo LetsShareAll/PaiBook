@@ -105,7 +105,9 @@ function reset() {
         </p>
       </NuxtLink>
     </div>
-    <p v-else class="pb-muted empty">没有符合条件的条目。</p>
+    <p v-else class="pb-muted empty">
+      {{ (data?.total ?? 0) === 0 ? '这个游戏的图鉴还没开始录入。' : '没有符合条件的条目。' }}
+    </p>
   </main>
 </template>
 
