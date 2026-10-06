@@ -14,7 +14,10 @@ CURL_ARGS=${SMOKE_CURL_ARGS:-}
 check() {
   local name="$1" url="$2" expect="$3" needle="${4:-}"
   local code
-  code=$(curl -s -m 20 $CURL_ARGS -o /tmp/pb-smoke-body -w "%{http_code}" "$url" 2>/dev/null || echo 000)
+  # 不能写 `|| echo 000`：curl 超时也会先把 http_code 打出来，那个写法会把 200 拼成 "200000"，
+  # 于是一个只是慢了一点的站点被报成 FAIL。这里只在完全没拿到码时才当 000。
+  code=$(curl -s -m 20 $CURL_ARGS -o /tmp/pb-smoke-body -w "%{http_code}" "$url" 2>/dev/null)
+  [ -n "$code" ] || code=000
   if [ "$code" != "$expect" ]; then
     printf 'FAIL %-30s %-4s (期望 %s)  %s\n' "$name" "$code" "$expect" "$url"
     fail=1
