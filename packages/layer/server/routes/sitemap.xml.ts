@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import { createDb, listPublishedGuides } from '@paibook/db'
+import { createDb, listCodexEntities, listPublishedGuides } from '@paibook/db'
 import type { GameId } from '@paibook/contracts'
 
 /**
@@ -23,6 +23,11 @@ export default defineEventHandler(async (event: H3Event) => {
         loc: `${siteUrl}${base}guides/${guide.slug}`,
         lastmod: guide.publishedAt ? guide.publishedAt.slice(0, 10) : undefined,
       })
+    }
+
+    entries.push({ loc: `${siteUrl}${base}codex` })
+    for (const item of await listCodexEntities(createDb(db), gameId as GameId)) {
+      entries.push({ loc: `${siteUrl}${base}codex/${item.slug}` })
     }
   } else {
     for (const path of ['/', '/genshin/', '/honkaistarrail/', '/zenlesszonezero/']) {
