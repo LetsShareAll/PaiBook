@@ -32,6 +32,10 @@ export const entity = sqliteTable(
     kind: text('kind').notNull(),
     nameZh: text('name_zh').notNull(),
     nameEn: text('name_en'),
+    /** 图鉴地址用；游戏内唯一。 */
+    slug: text('slug'),
+    /** 分类元数据（JSON）：element / class / rarity / faction。只存分类，不存数值。 */
+    facets: text('facets'),
   },
   (t) => [index('entity_game_kind_idx').on(t.gameId, t.kind)],
 )

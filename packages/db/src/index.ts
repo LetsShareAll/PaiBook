@@ -3,6 +3,7 @@ export { createDb, type Db } from './client.ts'
 export { listPublishedGuides, getPublishedGuide, listRecentGuides } from './repositories/guides.ts'
 export { searchPublishedGuides, syncGuideSearch, reindexGuideSearch } from './repositories/search.ts'
 export { listLinks, createLink, deleteLink, type LinkWriteInput } from './repositories/links.ts'
+export { listCodexEntities, getCodexEntry, parseFacets, toEntity } from './repositories/codex.ts'
 export { exportContent, importContent, type ImportSummary } from './repositories/content.ts'
 export {
   listVersions,

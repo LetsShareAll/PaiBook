@@ -37,6 +37,7 @@ check_game() {
   check "$label sitemap" "$root$prefix/sitemap.xml" 200 "<urlset"
   check "$label 攻略接口" "$root$prefix/api/guides" 200 "\"items\""
   check "$label 实体接口" "$root$prefix/api/entities" 200 "\"items\""
+  check "$label 图鉴接口" "$root$prefix/api/codex" 200 "\"items\""
   check "$label 搜索" "$root$prefix/api/search?q=%E7%A4%BA%E4%BE%8B" 200
   check "$label 分享卡片图" "$root$prefix/og.png" 200
   check "$label 后台接口上锁" "$root$prefix/api/admin/guides" 401

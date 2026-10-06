@@ -1,5 +1,6 @@
 export * from './game.ts'
 export * from './entity.ts'
+export * from './codex.ts'
 export * from './guide.ts'
 export * from './link.ts'
 export * from './content.ts'

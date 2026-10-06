@@ -49,6 +49,8 @@ const site = computed(() => {
       <p class="pb-header__tagline">{{ tagline }}</p>
 
       <div class="pb-header__nav">
+        <NuxtLink class="pb-header__navlink" to="/codex">图鉴</NuxtLink>
+        <span class="pb-header__sep" aria-hidden="true">·</span>
         <NuxtLink class="pb-header__navlink" to="/profile">我的档案</NuxtLink>
         <span class="pb-header__sep" aria-hidden="true">·</span>
         <NuxtLink class="pb-header__navlink" to="/admin">写作台</NuxtLink>

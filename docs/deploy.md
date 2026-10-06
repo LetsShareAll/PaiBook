@@ -58,6 +58,7 @@ cd apps/genshin
 npx wrangler d1 execute paibook --remote --file=../../packages/db/migrations/0000_hesitant_rhodey.sql
 npx wrangler d1 execute paibook --remote --file=../../packages/db/migrations/0001_guide_fts.sql
 npx wrangler d1 execute paibook --remote --file=../../packages/db/migrations/0002_entity_unique.sql
+npx wrangler d1 execute paibook --remote --file=../../packages/db/migrations/0003_entity_slug_facets.sql
 ```
 
 `game` / `version` / `entity` 的基础行现在可以在写作台的「分类维护」里加，不必再写 SQL；

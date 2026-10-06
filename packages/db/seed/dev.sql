@@ -11,14 +11,14 @@ INSERT OR REPLACE INTO version (id, game_id, label, sort_key) VALUES
   ('honkaistarrail:demo', 'honkaistarrail', '示例 1.0', 1),
   ('zenlesszonezero:demo', 'zenlesszonezero', '示例 1.0', 1);
 
-INSERT OR REPLACE INTO entity (id, game_id, kind, name_zh, name_en) VALUES
-  ('genshin:demo-char-a', 'genshin', 'character', '示例角色甲', 'Demo Character A'),
-  ('genshin:demo-char-b', 'genshin', 'character', '示例角色乙', 'Demo Character B'),
-  ('genshin:demo-enemy-a', 'genshin', 'enemy', '示例敌人', 'Demo Enemy'),
-  ('honkaistarrail:demo-char-a', 'honkaistarrail', 'character', '示例角色·巡猎', 'Demo Character'),
-  ('honkaistarrail:demo-enemy-a', 'honkaistarrail', 'enemy', '示例敌人·虚卒', 'Demo Enemy'),
-  ('zenlesszonezero:demo-agent-a', 'zenlesszonezero', 'agent', '示例代理人·强攻', 'Demo Agent'),
-  ('zenlesszonezero:demo-bangboo-a', 'zenlesszonezero', 'bangboo', '示例邦布', 'Demo Bangboo');
+INSERT OR REPLACE INTO entity (id, game_id, kind, name_zh, name_en, slug, facets) VALUES
+  ('genshin:demo-char-a', 'genshin', 'character', '示例角色甲', 'Demo Character A', 'demo-char-a', '{"element":"冰","class":"单手剑","rarity":"5","faction":"蒙德"}'),
+  ('genshin:demo-char-b', 'genshin', 'character', '示例角色乙', 'Demo Character B', 'demo-char-b', '{"element":"火","class":"法器","rarity":"4","faction":"璃月"}'),
+  ('genshin:demo-enemy-a', 'genshin', 'enemy', '示例敌人', 'Demo Enemy', 'demo-enemy-a', '{"element":"物理","faction":"深渊教团"}'),
+  ('honkaistarrail:demo-char-a', 'honkaistarrail', 'character', '示例角色·巡猎', 'Demo Character', 'demo-char-a', '{"element":"冰","class":"巡猎","rarity":"5","faction":"星穹列车"}'),
+  ('honkaistarrail:demo-enemy-a', 'honkaistarrail', 'enemy', '示例敌人·虚卒', 'Demo Enemy', 'demo-enemy-a', '{"element":"量子","faction":"反物质军团"}'),
+  ('zenlesszonezero:demo-agent-a', 'zenlesszonezero', 'agent', '示例代理人·强攻', 'Demo Agent', 'demo-agent-a', '{"element":"物理","class":"强攻","rarity":"S","faction":"狡兔屋"}'),
+  ('zenlesszonezero:demo-bangboo-a', 'zenlesszonezero', 'bangboo', '示例邦布', 'Demo Bangboo', 'demo-bangboo-a', '{"class":"邦布","rarity":"A","faction":"狡兔屋"}');
 
 INSERT OR REPLACE INTO guide (id, game_id, slug, title, summary, body, status, version_id, published_at) VALUES
   (

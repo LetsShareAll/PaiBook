@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { guideStatusSchema, guideSummarySchema, versionRefSchema } from './guide.ts'
-import { entityKindSchema, entityRefSchema } from './entity.ts'
+import { entityFacetsSchema, entityKindSchema, entityRefSchema } from './entity.ts'
 import { gameIdSchema } from './game.ts'
 
 export const guideSlugSchema = z
@@ -65,6 +65,8 @@ export const entityWriteSchema = z.object({
   kind: entityKindSchema,
   nameZh: z.string().min(1).max(40),
   nameEn: z.string().max(60).nullable(),
+  /** 分类元数据。手工维护的站（绝区零）靠它把图鉴填起来。 */
+  facets: entityFacetsSchema.optional(),
 })
 export type EntityWrite = z.infer<typeof entityWriteSchema>
 

@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import type { GameId } from '@paibook/contracts'
 import type { Db } from '@paibook/db'
-import { getPublishedGuide, listEntities, listLinks, listPublishedGuides, searchPublishedGuides } from '@paibook/db'
+import { getCodexEntry, getPublishedGuide, listCodexEntities, listEntities, listLinks, listPublishedGuides, searchPublishedGuides } from '@paibook/db'
 import { createAdminApp } from './admin.ts'
 
 export interface ApiEnv {
@@ -47,6 +47,18 @@ export function createApiApp(ctx: ApiContext) {
   app.get('/entities', async (c) => {
     const items = await listEntities(ctx.db, ctx.game)
     return c.json({ items })
+  })
+
+  /** 图鉴：本游戏全部实体的分类清单（公开，无用户数据）。 */
+  app.get('/codex', async (c) => {
+    const items = await listCodexEntities(ctx.db, ctx.game)
+    return c.json({ items, total: items.length })
+  })
+
+  app.get('/codex/:slug', async (c) => {
+    const entry = await getCodexEntry(ctx.db, ctx.game, c.req.param('slug'))
+    if (!entry) return c.json({ error: 'not_found' }, 404)
+    return c.json(entry)
   })
 
   app.get('/search', async (c) => {

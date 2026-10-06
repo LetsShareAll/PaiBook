@@ -18,7 +18,8 @@ const kinds = [
 const kindLabel = (kind: string) => kinds.find((item) => item.value === kind)?.label ?? kind
 
 const taxonomy = ref<Taxonomy>({ versions: [], entities: [] })
-const entityForm = ref({ kind: 'character', nameZh: '', nameEn: '' })
+const EMPTY_FACETS = { element: '', class: '', rarity: '', faction: '' }
+const entityForm = ref({ kind: 'character', nameZh: '', nameEn: '', ...EMPTY_FACETS })
 const versionForm = ref({ label: '' })
 const message = ref('')
 const busy = ref(false)
@@ -40,9 +41,14 @@ async function addEntity() {
         kind: entityForm.value.kind,
         nameZh: entityForm.value.nameZh.trim(),
         nameEn: entityForm.value.nameEn.trim() || null,
+        facets: Object.fromEntries(
+          Object.entries(EMPTY_FACETS)
+            .map(([key]) => [key, String(entityForm.value[key as keyof typeof EMPTY_FACETS]).trim()])
+            .filter(([, value]) => value !== ''),
+        ),
       },
     })
-    entityForm.value = { kind: entityForm.value.kind, nameZh: '', nameEn: '' }
+    entityForm.value = { kind: entityForm.value.kind, nameZh: '', nameEn: '', ...EMPTY_FACETS }
     await load()
     emit('changed')
   } catch {
@@ -122,6 +128,15 @@ async function removeVersion(id: string) {
           </select>
           <input v-model="entityForm.nameZh" class="tax__input" placeholder="中文名（必填）" />
           <input v-model="entityForm.nameEn" class="tax__input" placeholder="英文名（可空）" />
+          <div class="tax__facets">
+            <input v-model="entityForm.element" class="tax__input" placeholder="元素 / 属性" />
+            <input v-model="entityForm.class" class="tax__input" placeholder="职业 / 命途" />
+            <input v-model="entityForm.rarity" class="tax__input" placeholder="稀有度" />
+            <input v-model="entityForm.faction" class="tax__input" placeholder="阵营 / 所属" />
+          </div>
+          <p class="tax__hint pb-muted">
+            分类元数据可空，只填知道的。图鉴只放分类，不放数值——数值必须能追到游戏内文本或官方公告（ADR-0009）。
+          </p>
           <button class="pb-btn pb-btn--primary" type="submit" :disabled="busy || !entityForm.nameZh.trim()">
             添加实体
           </button>
@@ -208,6 +223,16 @@ async function removeVersion(id: string) {
 .tax__form {
   display: grid;
   gap: var(--pb-space-2);
+}
+.tax__facets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--pb-space-2);
+}
+.tax__hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
 }
 .tax__input {
   padding: 5px 8px;
